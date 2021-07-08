@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:tasarimi_kolaylastiracak_yapilar/drawer_menu.dart';
+import 'package:tasarimi_kolaylastiracak_yapilar/kisisel_font_kullanimi.dart';
 
 void main() {
   runApp(MyApp());
@@ -20,117 +22,57 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  int secilenMenuItem = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: Drawer(
-        child: Column(
-          children: [
-            UserAccountsDrawerHeader(
-              accountName: Text("Şirin Toprak"),
-              accountEmail: Text("sirintprk@gmail.com"),
-              currentAccountPicture: Image.network(
-                  "https://n11scdn.akamaized.net/a1/450/otomotiv-motosiklet/arma-sticker/otografik-sirine-sirinler-oto-sticker__0967917542860523.jpg"),
-              otherAccountsPictures: [
-                CircleAvatar(
-                  backgroundColor: Colors.purple,
-                  child: Text("AK"),
-                ),
-                CircleAvatar(
-                  backgroundColor: Colors.green,
-                  child: Text("BA"),
-                ),
-              ],
-            ),
-            Expanded(
-              child: ListView(
-                children: [
-                  ListTile(
-                    leading: Icon(Icons.home),
-                    title: Text("Ana Sayfa"),
-                    trailing: Icon(Icons.chevron_right),
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.call),
-                    title: Text("Ara"),
-                    trailing: Icon(Icons.chevron_right),
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.account_box),
-                    title: Text("Profil"),
-                    trailing: Icon(Icons.chevron_right),
-                  ),
-                  Divider(),
-                  InkWell(
-                    onTap: () {},
-                    splashColor: Colors.cyan,
-                    child: ListTile(
-                      leading: Icon(Icons.home),
-                      title: Text("Ana Sayfa"),
-                      trailing: Icon(Icons.chevron_right),
-                    ),
-                  ),
-                  AboutListTile(
-                    applicationName: "Flutter Dersleri",
-                    applicationIcon: Icon(Icons.save),
-                    applicationVersion: "2.0",
-                    child: Text("About Us"),
-                    applicationLegalese: null,
-                    icon: Icon(Icons.keyboard),
-                    aboutBoxChildren: [
-                      Text("data"),
-                      Text("data"),
-                      Text("data"),
-                    ],
-                  )
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
+      drawer: DrawerMenu(),
       appBar: AppBar(
         title: Text("Flutter Dersleri Bölüm 23"),
       ),
-      body: Column(
-        children: [
-          Center(
-            child: Text(
-              "Kişisel Font Kullanımı",
-              style: TextStyle(
-                  fontFamily: 'ElYazisi',
-                  fontSize: 36,
-                  fontWeight: FontWeight.w700),
+      body: KisiselFont(),
+      bottomNavigationBar: Theme(
+        data: ThemeData(
+          canvasColor: Colors.green,
+          primaryColor: Colors.orange,
+        ),
+        child: BottomNavigationBar(
+          items: <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                title: Text("Anasayfa"),
+                backgroundColor: Colors.amber),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.search),
+                activeIcon: Icon(Icons.call),
+                title: Text("Ara"),
+                backgroundColor: Colors.red),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.add),
+              title: Text("Ekle"),
+              backgroundColor: Colors.green,
             ),
-          ),
-          Center(
-            child: Text(
-              "Kişisel Font Kullanımı",
-              style: TextStyle(
-                  fontFamily: 'Genel',
-                  fontSize: 36,
-                  fontWeight: FontWeight.w700),
-            ),
-          ),
-          Center(
-            child: Text(
-              "Kişisel Font Kullanımı",
-              style: TextStyle(
-                fontFamily: 'Genel',
-                fontSize: 36,
-              ),
-            ),
-          ),
-          Center(
-            child: Text(
-              "Kişisel Font Kullanımı12",
-              style: TextStyle(
-                fontSize: 36,
-              ),
-            ),
-          ),
-        ],
+            BottomNavigationBarItem(
+                icon: Icon(Icons.account_box),
+                title: Text("Profil"),
+                backgroundColor: Colors.orange),
+          ],
+          type: BottomNavigationBarType.fixed,
+          currentIndex: secilenMenuItem,
+          fixedColor: Colors.indigo,
+          onTap: (index) {
+            setState(() {
+              secilenMenuItem = index;
+            });
+          },
+        ),
       ),
     );
   }
