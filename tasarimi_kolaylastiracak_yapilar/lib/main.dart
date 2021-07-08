@@ -6,6 +6,7 @@ import 'package:tasarimi_kolaylastiracak_yapilar/kisisel_font_kullanimi.dart';
 import 'package:tasarimi_kolaylastiracak_yapilar/user.dart';
 
 import 'ekle.dart';
+import 'page_view.dart';
 
 void main() {
   runApp(MyApp());
@@ -39,6 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late AramaSayfasi sayfaArama;
   late Ekle sayfaEkle;
   late UserSayfasi sayfaUser;
+  late PageViewOrnek pageViewOrnek;
 
   var keyAnaSayfa = PageStorageKey("key_ana_sayfa");
   var keyArama = PageStorageKey("key_arama_sayfa");
@@ -51,7 +53,8 @@ class _MyHomePageState extends State<MyHomePage> {
     sayfaArama = AramaSayfasi(keyArama);
     sayfaEkle = Ekle();
     sayfaUser = UserSayfasi();
-    tumSayfalar = [sayfaAna, sayfaArama, sayfaEkle, sayfaUser];
+    pageViewOrnek = PageViewOrnek();
+    tumSayfalar = [sayfaAna, sayfaArama, sayfaEkle, sayfaUser, pageViewOrnek];
   }
 
   @override
@@ -93,6 +96,10 @@ class _MyHomePageState extends State<MyHomePage> {
           BottomNavigationBarItem(
               icon: Icon(Icons.account_box),
               title: Text("Profil"),
+              backgroundColor: Colors.orange),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.cached),
+              title: Text("PageView"),
               backgroundColor: Colors.orange),
         ],
         type: BottomNavigationBarType.shifting,
