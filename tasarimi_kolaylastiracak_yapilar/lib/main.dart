@@ -40,12 +40,15 @@ class _MyHomePageState extends State<MyHomePage> {
   late Ekle sayfaEkle;
   late UserSayfasi sayfaUser;
 
+  var keyAnaSayfa = PageStorageKey("key_ana_sayfa");
+  var keyArama = PageStorageKey("key_arama_sayfa");
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    sayfaAna = Anasayfa();
-    sayfaArama = AramaSayfasi();
+    sayfaAna = Anasayfa(keyAnaSayfa);
+    sayfaArama = AramaSayfasi(keyArama);
     sayfaEkle = Ekle();
     sayfaUser = UserSayfasi();
     tumSayfalar = [sayfaAna, sayfaArama, sayfaEkle, sayfaUser];

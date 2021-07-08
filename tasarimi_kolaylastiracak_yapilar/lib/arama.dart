@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 class AramaSayfasi extends StatelessWidget {
-  const AramaSayfasi({Key? key}) : super(key: key);
+  AramaSayfasi(Key k) : super(key: k);
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemExtent: 300,
+        itemExtent: 100,
         itemBuilder: (BuildContext context, index) {
           return Container(
             padding: EdgeInsets.all(10),
