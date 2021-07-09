@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_modaapp/detay.dart';
 
 void main() {
   runApp(ModaApp());
@@ -23,10 +24,61 @@ class Anasayfa extends StatefulWidget {
   _AnasayfaState createState() => _AnasayfaState();
 }
 
-class _AnasayfaState extends State<Anasayfa> {
+class _AnasayfaState extends State<Anasayfa>
+    with SingleTickerProviderStateMixin {
+  TabController? tabController;
+  @override
+  void initState() {
+    super.initState();
+    tabController = TabController(length: 4, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    tabController!.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: Material(
+        color: Colors.white,
+        child: TabBar(
+          indicatorColor: Colors.transparent,
+          controller: tabController,
+          tabs: [
+            Tab(
+              icon: Icon(
+                Icons.more,
+                color: Colors.grey,
+                size: 22,
+              ),
+            ),
+            Tab(
+              icon: Icon(
+                Icons.play_arrow,
+                color: Colors.grey,
+                size: 22,
+              ),
+            ),
+            Tab(
+              icon: Icon(
+                Icons.navigation,
+                color: Colors.black,
+                size: 22,
+              ),
+            ),
+            Tab(
+              icon: Icon(
+                Icons.supervised_user_circle,
+                color: Colors.grey,
+                size: 22,
+              ),
+            ),
+          ],
+        ),
+      ),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -161,16 +213,30 @@ class _AnasayfaState extends State<Anasayfa> {
                     ),
                     Row(
                       children: [
-                        Container(
-                          height: 200,
-                          width: (MediaQuery.of(context).size.width - 50) / 2,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            image: DecorationImage(
-                                image: AssetImage(
-                                  'assets/images/modelgrid1.jpeg',
-                                ),
-                                fit: BoxFit.cover),
+                        InkWell(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => Detay(
+                                    imgPath: "assets/images/modelgrid1.jpeg"),
+                              ),
+                            );
+                          },
+                          child: Hero(
+                            tag: 'assets/images/modelgrid1.jpeg',
+                            child: Container(
+                              height: 200,
+                              width:
+                                  (MediaQuery.of(context).size.width - 50) / 2,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                image: DecorationImage(
+                                    image: AssetImage(
+                                      'assets/images/modelgrid1.jpeg',
+                                    ),
+                                    fit: BoxFit.cover),
+                              ),
+                            ),
                           ),
                         ),
                         SizedBox(
@@ -178,33 +244,63 @@ class _AnasayfaState extends State<Anasayfa> {
                         ),
                         Column(
                           children: [
-                            Container(
-                              height: 95,
-                              width:
-                                  (MediaQuery.of(context).size.width - 100) / 2,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                image: DecorationImage(
-                                    image: AssetImage(
-                                      'assets/images/modelgrid2.jpeg',
-                                    ),
-                                    fit: BoxFit.cover),
+                            InkWell(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => Detay(
+                                        imgPath:
+                                            "assets/images/modelgrid2.jpeg"),
+                                  ),
+                                );
+                              },
+                              child: Hero(
+                                tag: "assets/images/modelgrid2.jpeg",
+                                child: Container(
+                                  height: 95,
+                                  width: (MediaQuery.of(context).size.width -
+                                          100) /
+                                      2,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    image: DecorationImage(
+                                        image: AssetImage(
+                                          'assets/images/modelgrid2.jpeg',
+                                        ),
+                                        fit: BoxFit.cover),
+                                  ),
+                                ),
                               ),
                             ),
                             SizedBox(
                               height: 10,
                             ),
-                            Container(
-                              height: 95,
-                              width:
-                                  (MediaQuery.of(context).size.width - 100) / 2,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                image: DecorationImage(
-                                    image: AssetImage(
-                                      'assets/images/modelgrid3.jpeg',
-                                    ),
-                                    fit: BoxFit.cover),
+                            InkWell(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => Detay(
+                                        imgPath:
+                                            "assets/images/modelgrid3.jpeg"),
+                                  ),
+                                );
+                              },
+                              child: Hero(
+                                tag: "assets/images/modelgrid3.jpeg",
+                                child: Container(
+                                  height: 95,
+                                  width: (MediaQuery.of(context).size.width -
+                                          100) /
+                                      2,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    image: DecorationImage(
+                                        image: AssetImage(
+                                          'assets/images/modelgrid3.jpeg',
+                                        ),
+                                        fit: BoxFit.cover),
+                                  ),
+                                ),
                               ),
                             ),
                           ],
