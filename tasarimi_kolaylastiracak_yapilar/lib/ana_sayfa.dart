@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'models/veri.dart';
+import 'package:tasarimi_kolaylastiracak_yapilar/models/veri.dart';
 
 class Anasayfa extends StatefulWidget {
   Anasayfa(Key k) : super(key: k);

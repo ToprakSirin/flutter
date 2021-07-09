@@ -3,6 +3,7 @@ import 'package:tasarimi_kolaylastiracak_yapilar/ana_sayfa.dart';
 import 'package:tasarimi_kolaylastiracak_yapilar/arama.dart';
 import 'package:tasarimi_kolaylastiracak_yapilar/drawer_menu.dart';
 import 'package:tasarimi_kolaylastiracak_yapilar/kisisel_font_kullanimi.dart';
+import 'package:tasarimi_kolaylastiracak_yapilar/tabs.dart';
 import 'package:tasarimi_kolaylastiracak_yapilar/user.dart';
 
 import 'ekle.dart';
@@ -98,8 +99,8 @@ class _MyHomePageState extends State<MyHomePage> {
               title: Text("Profil"),
               backgroundColor: Colors.orange),
           BottomNavigationBarItem(
-              icon: Icon(Icons.cached),
-              title: Text("PageView"),
+              icon: Icon(Icons.account_box),
+              title: Text("Yenile"),
               backgroundColor: Colors.orange),
         ],
         type: BottomNavigationBarType.shifting,
@@ -107,6 +108,11 @@ class _MyHomePageState extends State<MyHomePage> {
         fixedColor: Colors.indigo,
         onTap: (index) {
           setState(() {
+            if (index == 3) {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) => TabOrnek()))
+                  .then((bb) {});
+            }
             secilenMenuItem = index;
           });
         },
