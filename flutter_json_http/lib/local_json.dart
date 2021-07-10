@@ -12,14 +12,50 @@ class _LocalJsonKullanimiState extends State<LocalJsonKullanimi> {
   List? tumarabalar;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    tumarabalar = veriKaynaginiOku();
+    debugPrint("init state çalıştı");
+    /* veriKaynaginiOku().then((gelenarabaListesi) {
+      setState(() {
+        tumarabalar = gelenarabaListesi;
+      });
+    }); */
   }
 
   @override
   Widget build(BuildContext context) {
-    veriKaynaginiOku();
+    debugPrint("build çalıştı");
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Local Json Kullanımı"),
+      ),
+      body: Container(
+        child: FutureBuilder(
+          future: veriKaynaginiOku(),
+          builder: (BuildContext context, sonuc) {
+            if (sonuc.hasData) {
+              tumarabalar = sonuc.data as List?;
+              return ListView.builder(
+                itemCount: tumarabalar!.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return ListTile(
+                    title: Text(tumarabalar![index]["araba_adi"]),
+                    subtitle: Text(tumarabalar![index]["ulke"]),
+                  );
+                },
+              );
+            } else {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          },
+        ),
+      ),
+    );
+  }
+/*   @override
+  Widget build(BuildContext context) {
+    debugPrint("build çalıştı");
     return Scaffold(
       appBar: AppBar(
         title: Text("Local Json Kullanımı"),
@@ -29,16 +65,16 @@ class _LocalJsonKullanimiState extends State<LocalJsonKullanimi> {
           itemCount: tumarabalar!.length,
           itemBuilder: (BuildContext context, int index) {
             return ListTile(
-              title: tumarabalar![index]["araba_adi"],
-              subtitle: tumarabalar![index]["ulke"],
+              title: Text(tumarabalar![index]["araba_adi"]),
+              subtitle: Text(tumarabalar![index]["ulke"]),
             );
           },
-        ),
+        )
       ),
     );
-  }
+  } */
 
-  veriKaynaginiOku() async {
+  Future veriKaynaginiOku() async {
     /* Future<String> jsonOku =
         DefaultAssetBundle.of(context).loadString('assets/data/araba.json');
     jsonOku.then((okunanJson) {
