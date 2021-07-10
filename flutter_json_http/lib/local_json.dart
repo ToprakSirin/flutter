@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 
+import 'package:flutter_json_http/models/araba.dart';
+
 class LocalJsonKullanimi extends StatefulWidget {
   LocalJsonKullanimi({Key? key}) : super(key: key);
 
@@ -9,7 +11,8 @@ class LocalJsonKullanimi extends StatefulWidget {
 }
 
 class _LocalJsonKullanimiState extends State<LocalJsonKullanimi> {
-  List? tumarabalar;
+  List<Araba>? tumarabalar;
+
   @override
   void initState() {
     super.initState();
@@ -31,15 +34,15 @@ class _LocalJsonKullanimiState extends State<LocalJsonKullanimi> {
       body: Container(
         child: FutureBuilder(
           future: veriKaynaginiOku(),
-          builder: (BuildContext context, sonuc) {
+          builder: (context, AsyncSnapshot<List<Araba>> sonuc) {
             if (sonuc.hasData) {
-              tumarabalar = sonuc.data as List?;
+              tumarabalar = sonuc.data;
               return ListView.builder(
                 itemCount: tumarabalar!.length,
                 itemBuilder: (BuildContext context, int index) {
                   return ListTile(
-                    title: Text(tumarabalar![index]["araba_adi"]),
-                    subtitle: Text(tumarabalar![index]["ulke"]),
+                    title: Text(tumarabalar![index].arabaAdi.toString()),
+                    subtitle: Text(tumarabalar![index].ulke.toString()),
                   );
                 },
               );
@@ -74,7 +77,7 @@ class _LocalJsonKullanimiState extends State<LocalJsonKullanimi> {
     );
   } */
 
-  Future veriKaynaginiOku() async {
+  Future<List<Araba>> veriKaynaginiOku() async {
     /* Future<String> jsonOku =
         DefaultAssetBundle.of(context).loadString('assets/data/araba.json');
     jsonOku.then((okunanJson) {
@@ -86,11 +89,13 @@ class _LocalJsonKullanimiState extends State<LocalJsonKullanimi> {
         .loadString('assets/data/araba.json');
     debugPrint(gelenJson);
 
-    List arabaListesi = json.decode(gelenJson.toString());
+    List<Araba> arabaListesi = (json.decode(gelenJson) as List)
+        .map((mapYapisi) => Araba.fromJson(mapYapisi))
+        .toList();
     debugPrint("toplam araba sayısı:" + arabaListesi.length.toString());
     for (int i = 0; i < arabaListesi.length; i++) {
-      debugPrint("Marka:" + arabaListesi[i]["araba_adi"].toString());
-      debugPrint("Ülkesi:" + arabaListesi[i]["ulke"].toString());
+      debugPrint("Marka:" + arabaListesi[i].arabaAdi.toString());
+      debugPrint("Ülkesi:" + arabaListesi[i].ulke.toString());
     }
     return arabaListesi;
   }
