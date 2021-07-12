@@ -36,69 +36,149 @@ class _PokemonListState extends State<PokemonList> {
       appBar: AppBar(
         title: Text("Pokedex"),
       ),
-      body: FutureBuilder(
-          future: veri,
-          builder: (BuildContext context, AsyncSnapshot<PokeDex> snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (snapshot.connectionState == ConnectionState.done) {
-              /* return snapshot.data == null
-                  ? Text("data")
-                  : GridView.builder(
-                      itemCount: snapshot.data!.pokemon!.length,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2),
-                      itemBuilder: (context, index) {
-                        return Center(
-                            child: Text(snapshot.data!.pokemon![index].name
-                                .toString()));
-                      },
-                    ); */
-              return GridView.count(
-                crossAxisCount: 2,
-                children: snapshot.data!.pokemon!.map((poke) {
-                  return InkWell(
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => PokemonDetail(
-                                pokemon: poke,
-                              )));
-                    },
-                    child: Hero(
-                      tag: poke.img!,
-                      child: Card(
-                        elevation: 6,
-                        child: Column(
-                          children: [
-                            Container(
-                              width: 100,
-                              height: 100,
-                              child: FadeInImage.assetNetwork(
-                                  placeholder: "assets/images/loading.gif",
-                                  image: poke.img!),
+      body: OrientationBuilder(
+        builder: (context, orientation) {
+          if (orientation == Orientation.portrait) {
+            return FutureBuilder(
+                future: veri,
+                builder:
+                    (BuildContext context, AsyncSnapshot<PokeDex> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (snapshot.connectionState == ConnectionState.done) {
+                    /* return snapshot.data == null
+                    ? Text("data")
+                    : GridView.builder(
+                        itemCount: snapshot.data!.pokemon!.length,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2),
+                        itemBuilder: (context, index) {
+                          return Center(
+                              child: Text(snapshot.data!.pokemon![index].name
+                                  .toString()));
+                        },
+                      ); */
+                    return GridView.count(
+                      crossAxisCount: 2,
+                      children: snapshot.data!.pokemon!.map((poke) {
+                        return InkWell(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => PokemonDetail(
+                                      pokemon: poke,
+                                    )));
+                          },
+                          child: Hero(
+                            tag: poke.img!,
+                            child: Card(
+                              elevation: 6,
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    width: 200,
+                                    height: 150,
+                                    child: FadeInImage.assetNetwork(
+                                      placeholder: "assets/images/loading.gif",
+                                      image: poke.img!,
+                                      fit: BoxFit.contain,
+                                    ),
+                                  ),
+                                  Text(
+                                    poke.name!,
+                                    style: TextStyle(
+                                        fontSize: 22,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold),
+                                  )
+                                ],
+                              ),
                             ),
-                            Text(
-                              poke.name!,
-                              style: TextStyle(
-                                  fontSize: 22,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                }).toList(),
-              );
-            } else {
-              return Container(
-                child: Text("data"),
-              );
-            }
-          }),
+                          ),
+                        );
+                      }).toList(),
+                    );
+                  } else {
+                    return Container(
+                      child: Text("data"),
+                    );
+                  }
+                });
+          } else {
+            return FutureBuilder(
+                future: veri,
+                builder:
+                    (BuildContext context, AsyncSnapshot<PokeDex> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (snapshot.connectionState == ConnectionState.done) {
+                    /* return snapshot.data == null
+                    ? Text("data")
+                    : GridView.builder(
+                        itemCount: snapshot.data!.pokemon!.length,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2),
+                        itemBuilder: (context, index) {
+                          return Center(
+                              child: Text(snapshot.data!.pokemon![index].name
+                                  .toString()));
+                        },
+                      ); */
+                    return GridView.extent(
+                      maxCrossAxisExtent: 300,
+                      children: snapshot.data!.pokemon!.map((poke) {
+                        return InkWell(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => PokemonDetail(
+                                      pokemon: poke,
+                                    )));
+                          },
+                          child: Hero(
+                            tag: poke.img!,
+                            child: Card(
+                              elevation: 6,
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    width: 200,
+                                    height: 150,
+                                    child: FadeInImage.assetNetwork(
+                                      placeholder: "assets/images/loading.gif",
+                                      image: poke.img!,
+                                      fit: BoxFit.contain,
+                                    ),
+                                  ),
+                                  Text(
+                                    poke.name!,
+                                    style: TextStyle(
+                                        fontSize: 22,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    );
+                  } else {
+                    return Container(
+                      child: Text("data"),
+                    );
+                  }
+                });
+          }
+        },
+      ),
     );
   }
 }
