@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 
-import 'model/pokemon_list.dart';
+import 'pokemon_list.dart';
 
 void main() {
   runApp(MyApp());
