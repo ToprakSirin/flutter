@@ -173,6 +173,7 @@ class _PokemonListState extends State<PokemonList> {
                   } else {
                     return Container(
                       child: Text("data"),
+                      color: Colors.white,
                     );
                   }
                 });
