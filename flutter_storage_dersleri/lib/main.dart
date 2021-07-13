@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_storage_dersleri/shared_pref_kullanimi.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'dosya_islemleri.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -15,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: SharedPrefKullanimi(),
+      home: DosyaIslemleri(),
     );
   }
 }
