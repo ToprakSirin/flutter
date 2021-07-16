@@ -12,15 +12,12 @@ class SqfliteIslemleri extends StatefulWidget {
 class _SqfliteIslemleriState extends State<SqfliteIslemleri> {
   @override
   Widget build(BuildContext context) {
-    Ogrenci emre = Ogrenci.withID(
-      100,
-      "emre",
-    );
+    Ogrenci emre = Ogrenci.withID(100, "emre", 1);
     Map<String, dynamic> olusanMap = emre.dbyeYazmakIcinMapeDonustur();
-    debugPrint(olusanMap['ad_soyad'].toString());
+    //debugPrint(olusanMap['isim'].toString());
 
     Ogrenci kopyaEmre = Ogrenci.dbdenOkudugunMapiObjeyeDonustur(olusanMap);
-    debugPrint(kopyaEmre.toString());
+    // debugPrint(kopyaEmre.toString());
 
     return Scaffold(
       appBar: AppBar(

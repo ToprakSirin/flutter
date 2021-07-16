@@ -22,8 +22,8 @@ class Ogrenci {
     _aktif = value;
   }
 
-  Ogrenci(this._isim, );
-  Ogrenci.withID(this._id, this._isim, );
+  Ogrenci(this._isim, this._aktif);
+  Ogrenci.withID(this._id, this._isim, this._aktif);
 
 //objeyi mape dönüştürme => Değer Yazdırmak için veritabanına
 
