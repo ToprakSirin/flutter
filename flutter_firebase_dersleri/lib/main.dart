@@ -39,10 +39,8 @@ class _AppState extends State<App> {
         // Check for errors
         if (snapshot.hasError) {
           return Scaffold(
-            
             body: Center(
               child: Text("Hata çıktı" + snapshot.error.toString()),
-              
             ),
           );
         }

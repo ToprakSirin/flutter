@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
+FirebaseAuth _auth = FirebaseAuth.instance;
 
 class LoginIslemleri extends StatefulWidget {
   LoginIslemleri({Key? key}) : super(key: key);
@@ -9,17 +12,19 @@ class LoginIslemleri extends StatefulWidget {
 }
 
 class _LoginIslemleriState extends State<LoginIslemleri> {
-  FirebaseAuth _auth = FirebaseAuth.instance;
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _auth.authStateChanges().listen((User? user) {
-      if (user != null) {
-        print('Kullanıcı oturumu açtı!');
+      if (user == null) {
+        print('Kullanıcı oturumu kapattı veya yok!');
       } else {
-        print('Kullanıcı oturumu kapattı!');
+        if (user.emailVerified) {
+          print('Kullanıcı oturumu açtı ve emali onaylı!');
+        } else {
+          print('Kullanıcı oturumu açtı ve emali onaylı değil!');
+        }
       }
     });
   }
@@ -69,6 +74,20 @@ class _LoginIslemleriState extends State<LoginIslemleri> {
               style: ElevatedButton.styleFrom(primary: Colors.brown),
             ),
             ElevatedButton(
+              onPressed: _googleIleGiris,
+              child: Text(
+                "Gmail ile giriş",
+              ),
+              style: ElevatedButton.styleFrom(primary: Colors.teal),
+            ),
+            ElevatedButton(
+              onPressed: _telNoGiris,
+              child: Text(
+                "Telefon No ile giriş",
+              ),
+              style: ElevatedButton.styleFrom(primary: Colors.teal),
+            ),
+            ElevatedButton(
               onPressed: _cikisYap,
               child: Text(
                 "Çıkış Yap",
@@ -83,20 +102,20 @@ class _LoginIslemleriState extends State<LoginIslemleri> {
 
   void _emailSifreKullaniciOlustur() async {
     String _email = "sirintprk21@gmail.com";
-    String _password = "password2";
+    String _password = "password";
 
     try {
       UserCredential _credential = await _auth.createUserWithEmailAndPassword(
           email: _email, password: _password);
-      User? _yeniUser = _credential.user;
-      await _yeniUser!.sendEmailVerification();
+      User? yeniUser = _credential.user;
+      await yeniUser!.sendEmailVerification();
       if (_auth.currentUser != null) {
-        debugPrint("Size bir mail attık lütfen onaylayınız.");
+        debugPrint("Email gönderildi lütfen onaylayınız.");
         await _auth.signOut();
       } else {
-        debugPrint("Kullanıcı sistemden attık");
+        debugPrint("Kullanıcı oturumdan atıldı");
       }
-      debugPrint(_yeniUser.toString());
+      debugPrint(yeniUser.toString());
     } catch (e) {
       debugPrint("*******HATA VAR************************");
       debugPrint(e.toString());
@@ -105,7 +124,7 @@ class _LoginIslemleriState extends State<LoginIslemleri> {
 
   void _emailSifreKullaniciGirisYap() async {
     String _email = "sirintprk21@gmail.com";
-    String _password = "password2";
+    String _password = "password";
 
     try {
       if (_auth.currentUser == null) {
@@ -113,17 +132,16 @@ class _LoginIslemleriState extends State<LoginIslemleri> {
                 email: _email, password: _password))
             .user;
         if (_oturumAcanUser!.emailVerified) {
-          debugPrint("Mail onaylı ana sayfaya gidilebilr.");
+          print("Oturum açma başarılı");
         } else {
-          debugPrint("Lütfen mailinizi onaylayıp tekrar giriş yapın");
+          print("Onayalama işleminizi yapmanız gerekmektedir.");
           _auth.signOut();
         }
       } else {
-        debugPrint("Otrum açmış kullanıcı zaten var");
+        print("Zaten oturum açık");
       }
     } catch (e) {
-      debugPrint("**********Hata Var**********");
-      debugPrint(e.toString());
+      print("Hatalı email veya şifre $e");
     }
   }
 
@@ -147,24 +165,25 @@ class _LoginIslemleriState extends State<LoginIslemleri> {
 
   void _updatePassword() async {
     try {
-      await _auth.currentUser!.updatePassword("paswword3");
-      debugPrint("Şifreniz güncellendi");
+      await _auth.currentUser!.updatePassword("password2");
+      print("Şifreniz güncellendi");
     } catch (e) {
       try {
-        String email = "sirintprk21@gmail.com";
-        String password = "password3";
+        String email = 'ibrahimhalillulu@gmail.com';
+        String password = 'password2';
 
+        // Create a credential
         AuthCredential credential =
             EmailAuthProvider.credential(email: email, password: password);
+        // Reauthenticate
         await FirebaseAuth.instance.currentUser!
             .reauthenticateWithCredential(credential);
-        debugPrint("Girilen eski email şifre bilgisi doğru");
-        await _auth.currentUser!.updatePassword("paswword3");
-        debugPrint("Auth yeniden sağlandı,şifrede güncellendi");
+        await _auth.currentUser!.updatePassword("password2");
+        print("Gücellendi");
       } catch (e) {
-        debugPrint("hata çıktı $e");
+        print("Hata oluştu $e");
       }
-      debugPrint("Şifre güncellenirken hata çıktı $e");
+      print("Şifre güncellenemedi");
     }
   }
 
@@ -192,5 +211,57 @@ class _LoginIslemleriState extends State<LoginIslemleri> {
       }
       debugPrint("Email güncellenirken hata çıktı $e");
     }
+  }
+
+  _googleIleGiris() async {
+    try {
+      // Trigger the authentication flow
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser!.authentication;
+
+      // Create a new credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      return await FirebaseAuth.instance.signInWithCredential(credential);
+    } catch (e) {
+      debugPrint("gmail girişi hata $e");
+    }
+
+    // Once signed in, return the UserCredential
+  }
+
+  void _telNoGiris() async {
+    //+95 42 542 5422
+    //123456
+    await _auth.verifyPhoneNumber(
+      phoneNumber: '+95 42 542 5422',
+      verificationCompleted: (PhoneAuthCredential credential) async {
+        await _auth.signInWithCredential(credential);
+      },
+      verificationFailed: (FirebaseAuthException e) {
+        print("Verification failed hatası: $e");
+      },
+      codeSent: (String verificationId, int? resendToken) async {
+        print("Kod Yollandı..");
+        try {
+          String smsCode = '123456';
+
+          // Create a PhoneAuthCredential with the code
+          PhoneAuthCredential credential = PhoneAuthProvider.credential(
+              verificationId: verificationId, smsCode: smsCode);
+
+          // Sign the user in (or link) with the credential
+          await _auth.signInWithCredential(credential);
+        } catch (e) {
+          print("Kod hatası:  $e");
+        }
+      },
+      codeAutoRetrievalTimeout: (String verificationId) {},
+    );
   }
 }
