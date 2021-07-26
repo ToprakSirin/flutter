@@ -35,6 +35,7 @@ class _MyHomePageState extends State<MyHomePage>
   AnimationController? controller;
   Animation? animation;
   Animation? animation2;
+  Animation? animation3;
 
   @override
   void initState() {
@@ -54,8 +55,11 @@ class _MyHomePageState extends State<MyHomePage>
 
     animation =
         ColorTween(begin: Colors.red, end: Colors.yellow).animate(controller!);
+        animation3 = CurvedAnimation(parent: controller!, curve: Curves.decelerate);
     animation2 = AlignmentTween(begin: Alignment(-1, -1), end: Alignment(1, 1))
         .animate(controller!);
+
+    
 
     controller!.reverse(from: 100);
     controller!.addStatusListener((durum) {
@@ -94,6 +98,7 @@ class _MyHomePageState extends State<MyHomePage>
           children: <Widget>[
             Text(
               'You have pushed the button this many times:',
+              style: TextStyle(fontSize: animation3!.value * 24),
             ),
             Container(
               alignment: animation2!.value,
