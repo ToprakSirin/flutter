@@ -270,9 +270,9 @@ class _FirestoreIslemleriState extends State<FirestoreIslemleri> {
 
   _galeriResimUpload() async {
     ImagePicker _picker = ImagePicker();
-    _picker.pickImage(source: ImageSource.gallery).then((value) {
+    _picker.getImage(source: ImageSource.gallery).then((value) {
       setState(() {
-        _secilenResim = value as PickedFile?;
+        _secilenResim = value;
       });
     });
 
@@ -290,9 +290,9 @@ class _FirestoreIslemleriState extends State<FirestoreIslemleri> {
 
   void _kameraResimUpload() async {
     ImagePicker _picker = ImagePicker();
-    _picker.pickImage(source: ImageSource.camera).then((value) {
+    _picker.getImage(source: ImageSource.camera).then((value) {
       setState(() {
-        _secilenResim = value as PickedFile?;
+        _secilenResim = value;
       });
     });
     var ref = FirebaseStorage.instance
