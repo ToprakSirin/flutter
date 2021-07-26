@@ -52,9 +52,9 @@ class _MyHomePageState extends State<MyHomePage>
     controller!.forward(from: 20);
     controller!.addStatusListener((durum) {
       if (durum == AnimationStatus.completed) {
-        controller!.reverse();
+        controller!.reverse().orCancel;
       } else if (durum == AnimationStatus.dismissed) {
-        controller!.forward();
+        controller!.forward().orCancel;
       } else {
         debugPrint("Durum: " + durum.toString());
       }
