@@ -2,6 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_dersleri/login_islemleri.dart';
 
+import 'firestore_islemleri.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -12,6 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'Flutter Demo',
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
@@ -47,7 +50,7 @@ class _AppState extends State<App> {
 
         // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
-          return LoginIslemleri();
+          return FirestoreIslemleri();
         }
 
         // Otherwise, show something whilst waiting for initialization to complete
