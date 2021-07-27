@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animasyon/transform_widget.dart';
 
 import 'animasyon_widgetlari.dart';
 import 'new_page.dart';
@@ -12,6 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -130,6 +132,16 @@ class _MyHomePageState extends State<MyHomePage>
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => AnimasyonluWidgetlar(),
+                  ),
+                );
+              },
+            ),
+            ElevatedButton(
+              child: Text("Transform Widgetlar"),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => TransformWidgetlar(),
                   ),
                 );
               },
