@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'animasyon_widgetlari.dart';
 import 'new_page.dart';
 
 void main() {
@@ -55,11 +56,9 @@ class _MyHomePageState extends State<MyHomePage>
 
     animation =
         ColorTween(begin: Colors.red, end: Colors.yellow).animate(controller!);
-        animation3 = CurvedAnimation(parent: controller!, curve: Curves.decelerate);
+    animation3 = CurvedAnimation(parent: controller!, curve: Curves.decelerate);
     animation2 = AlignmentTween(begin: Alignment(-1, -1), end: Alignment(1, 1))
         .animate(controller!);
-
-    
 
     controller!.reverse(from: 100);
     controller!.addStatusListener((durum) {
@@ -121,6 +120,16 @@ class _MyHomePageState extends State<MyHomePage>
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => NewPage(),
+                  ),
+                );
+              },
+            ),
+            ElevatedButton(
+              child: Text("Animasyonlu Widgetlar"),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => AnimasyonluWidgetlar(),
                   ),
                 );
               },
