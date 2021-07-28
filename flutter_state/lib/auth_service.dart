@@ -6,6 +6,11 @@ enum KullaniciDurumu { OturumAcilmis, OturumAcilmamis, OturumAciliyor }
 class AuthService with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   KullaniciDurumu _durum = KullaniciDurumu.OturumAcilmamis;
+  User? _user;
+
+  User get user => this._user!;
+
+  set user(User value) => this._user = value;
 
   KullaniciDurumu get durum => this._durum;
 
@@ -20,8 +25,10 @@ class AuthService with ChangeNotifier {
 
   void _authStateChanged(User? user) {
     if (user == null) {
+      _user = null;
       durum = KullaniciDurumu.OturumAcilmamis;
     } else {
+      _user = user;
       durum = KullaniciDurumu.OturumAcilmis;
     }
   }
@@ -33,6 +40,7 @@ class AuthService with ChangeNotifier {
       UserCredential _credential = await _auth.createUserWithEmailAndPassword(
           email: email, password: sifre);
       User? _yeniKullanici = _credential.user;
+      _user = _yeniKullanici;
       return _yeniKullanici!;
     } catch (e) {
       durum = KullaniciDurumu.OturumAcilmamis;
@@ -47,8 +55,9 @@ class AuthService with ChangeNotifier {
       durum = KullaniciDurumu.OturumAciliyor;
       UserCredential _credential =
           await _auth.signInWithEmailAndPassword(email: email, password: sifre);
-      User? _yeniKullanici = _credential.user;
-      return _yeniKullanici!;
+      User? _oturumAcanKullanici = _credential.user;
+      _user = _oturumAcanKullanici;
+      return _oturumAcanKullanici!;
     } catch (e) {
       durum = KullaniciDurumu.OturumAcilmamis;
 
@@ -60,6 +69,8 @@ class AuthService with ChangeNotifier {
   Future<bool> signOut() async {
     try {
       await _auth.signOut();
+      _user = null;
+      durum = KullaniciDurumu.OturumAcilmamis;
       return true;
     } catch (e) {
       debugPrint("sign out metotudunda hata çıktı $e");

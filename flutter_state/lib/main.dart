@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_state/auth_service.dart';
 import 'package:flutter_state/counter.dart';
 import 'package:flutter_state/sayac_with_provider.dart';
 import 'package:provider/provider.dart';
@@ -60,9 +61,16 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => ChangeNotifierProvider<Counter>(
-                        create: (_) => Counter(0),
-                        child: ProviderSayacUygulamasi()),
+                    builder: (context) => MultiProvider(
+                      providers: [
+                        ChangeNotifierProvider<Counter>(
+                          create: (_) => Counter(0),
+                        ),
+                        ChangeNotifierProvider(
+                            create: (context) => AuthService()),
+                      ],
+                      child: ProviderSayacUygulamasi(),
+                    ),
                   ),
                 );
               },
