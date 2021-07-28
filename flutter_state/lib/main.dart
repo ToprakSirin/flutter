@@ -6,6 +6,8 @@ import 'package:flutter_state/sayac_with_provider.dart';
 import 'package:flutter_state/stream.kullanimi.dart';
 import 'package:provider/provider.dart';
 
+import 'block_kullanimi.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -85,6 +87,17 @@ class _MyHomePageState extends State<MyHomePage> {
                 );
               },
               child: Text("Stream kullanımı"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => BlockKullanimi(),
+                  ),
+                );
+              },
+              child: Text("Block kullanımı"),
+              style: ElevatedButton.styleFrom(primary: Colors.green),
             ),
           ],
         ),

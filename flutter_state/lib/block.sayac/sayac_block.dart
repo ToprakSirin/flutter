@@ -6,12 +6,24 @@ class SayacBlock {
   //state için streamcontroller
   final _sayacStateStreamController = StreamController<int>();
   Stream<int> get sayac => _sayacStateStreamController.stream;
-  StreamSink<int> get _sayacStateSink => _sayacStateStreamController.sink;
+  StreamSink<int> get sayacStateSink => _sayacStateStreamController.sink;
 
   //eventler için sstreamcontroller
   final _sayacEventStreamController = StreamController<SayacEvent>();
   Stream<SayacEvent> get _sayacEventStream =>
       _sayacEventStreamController.stream;
-  StreamSink<SayacEvent> get _sayacEventSink =>
-      _sayacEventStreamController.sink;
+  StreamSink<SayacEvent> get sayacEventSink => _sayacEventStreamController.sink;
+
+  SayacBlock() {
+    _sayacEventStream.listen(_mapEventToState);
+  }
+
+  void _mapEventToState(SayacEvent event) {
+    if (event is ArttirmaEvent) {
+      _sayac++;
+    } else {
+      _sayac--;
+    }
+    sayacStateSink.add(_sayac);
+  }
 }
