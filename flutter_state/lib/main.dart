@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_state/auth_service.dart';
 import 'package:flutter_state/counter.dart';
 import 'package:flutter_state/sayac_with_provider.dart';
+import 'package:flutter_state/stream.kullanimi.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -74,7 +75,17 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 );
               },
-            )
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => StreamKullanimi(),
+                  ),
+                );
+              },
+              child: Text("Stream kullanımı"),
+            ),
           ],
         ),
       ),
