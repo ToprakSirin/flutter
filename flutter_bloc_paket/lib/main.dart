@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_bloc_paket/counter_bloc/counter_bloc.dart';
 import 'package:flutter_bloc_paket/counter_bloc/counter_event.dart';
 import 'package:flutter_bloc_paket/counter_bloc/counter_state.dart';
+import 'package:flutter_bloc_paket/theme_cubit.dart';
 
 void main() {
   runApp(MyApp());
@@ -11,14 +12,19 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return BlocProvider(
+      create: (context) => ThemeCubit(),
+      child: BlocBuilder<ThemeCubit, ThemeData>(
+        builder: (context, tema) {
+          return MaterialApp(
+            title: 'Flutter Demo',
+            debugShowCheckedModeBanner: false,
+            theme: tema,
+            home: BlocProvider(
+                create: (context) => CounterBloc(), child: MyHomePage()),
+          );
+        },
       ),
-      home:
-          BlocProvider(create: (context) => CounterBloc(), child: MyHomePage()),
     );
   }
 }
@@ -85,6 +91,13 @@ class MyActions extends StatelessWidget {
           },
           tooltip: 'Azalt',
           child: Icon(Icons.remove),
+        ),
+        FloatingActionButton(
+          onPressed: () {
+            context.read<ThemeCubit>().temaDegistir();
+          },
+          tooltip: 'Tema Değiştir',
+          child: Icon(Icons.brightness_6),
         ),
       ],
     );
