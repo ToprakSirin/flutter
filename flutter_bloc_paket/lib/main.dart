@@ -5,6 +5,8 @@ import 'package:flutter_bloc_paket/counter_bloc/counter_event.dart';
 import 'package:flutter_bloc_paket/counter_bloc/counter_state.dart';
 import 'package:flutter_bloc_paket/theme_cubit.dart';
 
+import 'bloc_plugin/cubit/sayici_cubit.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -20,8 +22,17 @@ class MyApp extends StatelessWidget {
             title: 'Flutter Demo',
             debugShowCheckedModeBanner: false,
             theme: tema,
-            home: BlocProvider(
-                create: (context) => CounterBloc(), child: MyHomePage()),
+            home: MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (context) => CounterBloc(),
+                ),
+                BlocProvider(
+                  create: (context) => SayiciCubit(),
+                ),
+              ],
+              child: MyHomePage(),
+            ),
           );
         },
       ),
@@ -62,6 +73,13 @@ class MyCenterWidget extends StatelessWidget {
               style: Theme.of(context).textTheme.headline4,
             );
           }),
+          BlocBuilder<SayiciCubit, SayiciState>(
+              builder: (context, SayiciState) {
+            return Text(
+              SayiciState.deger.toString(),
+              style: Theme.of(context).textTheme.headline4,
+            );
+          }),
         ],
       ),
     );
@@ -98,6 +116,13 @@ class MyActions extends StatelessWidget {
           },
           tooltip: 'Tema Değiştir',
           child: Icon(Icons.brightness_6),
+        ),
+        FloatingActionButton(
+          onPressed: () {
+            context.read<SayiciCubit>().arttir();
+          },
+          tooltip: 'Tema Değiştir',
+          child: Icon(Icons.accessibility),
         ),
       ],
     );
