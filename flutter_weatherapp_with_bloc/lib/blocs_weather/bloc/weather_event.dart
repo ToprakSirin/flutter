@@ -10,5 +10,5 @@ abstract class WeatherEvent extends Equatable {
 class FetchWeatherEvent extends WeatherEvent {
   final String sehirAdi;
 
-  FetchWeatherEvent(this.sehirAdi);
+  FetchWeatherEvent({required this.sehirAdi});
 }
