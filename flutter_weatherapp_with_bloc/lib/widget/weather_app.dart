@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_weatherapp_with_bloc/blocs_weather/bloc/weather_bloc.dart';
+import 'package:flutter_weatherapp_with_bloc/blocs_weather/tema/bloc/tema_bloc.dart';
 import 'package:flutter_weatherapp_with_bloc/widget/hava_durumu_resim.dart';
 import 'package:flutter_weatherapp_with_bloc/widget/location.dart';
 import 'package:flutter_weatherapp_with_bloc/widget/max_min_sicaklik.dart';
@@ -44,6 +45,15 @@ class WeatherApp extends StatelessWidget {
             }
             if (state is WeatherLoadedState) {
               final getirilenWeather = state.weather;
+
+              ///bloca event gönderme
+              final havaDurumuKisaltma =
+                  getirilenWeather.consolidatedWeather[0].weatherStateAbbr;
+              /*    final _temaBloc = BlocProvider.of<TemaBloc>(context);
+              _temaBloc.add(event); */
+              BlocProvider.of<TemaBloc>(context).add(
+                  TemaDegistirEvent(havaDurumuKisaltmasi: havaDurumuKisaltma));
+
               getirilenWeather.consolidatedWeather[0];
 
               return ListView(
