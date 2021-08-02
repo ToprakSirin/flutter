@@ -1,13 +1,24 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+
 import 'package:flutter/material.dart';
 
 import 'common_widget/social_log_in_button.dart';
 
 class SignInPage extends StatelessWidget {
-  Widget? buttonIcon;
+  final Function(User)? onSignIn;
+
+  const SignInPage({Key? key,required this.onSignIn}) : super(key: key);
+
+  void _misafirGirisi() async {
+    UserCredential sonuc = await FirebaseAuth.instance.signInAnonymously();
+    onSignIn!(sonuc.user);
+    print("Oturum açan user ıd: " + sonuc.user!.uid.toString());
+  }
+
   @override
   Widget build(BuildContext context) {
+    Widget? buttonIcon;
     return Scaffold(
       appBar: AppBar(
         title: Text("Flutter Lovers"),
@@ -61,50 +72,6 @@ class SignInPage extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  void _misafirGirisi() async {
-    UserCredential sonuc = await FirebaseAuth.instance.signInAnonymously();
-    print("Oturum açan user ıd: " + sonuc.user!.uid.toString());
-  }
-}
-
-class App extends StatefulWidget {
-  // Create the initialization Future outside of `build`:
-  @override
-  _AppState createState() => _AppState();
-}
-
-class _AppState extends State<App> {
-  /// The future is part of the state of our widget. We should not call `initializeApp`
-  /// directly inside [build].
-  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      // Initialize FlutterFire:
-      future: _initialization,
-      builder: (context, snapshot) {
-        // Check for errors
-        if (snapshot.hasError) {
-          return Scaffold(
-            body: Center(
-              child: Text("Hata Çıktı" + snapshot.hasError.toString()),
-            ),
-          );
-        }
-
-        // Once complete, show your application
-
-        // Otherwise, show something whilst waiting for initialization to complete
-        return Scaffold(
-          body: Center(
-            child: CircularProgressIndicator(),
-          ),
-        );
-      },
     );
   }
 }
