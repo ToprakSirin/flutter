@@ -5,36 +5,52 @@ class SocialLoginButton extends StatelessWidget {
   final Color buttonColor;
   final Color textColor;
   final double radius;
-  //final double yukseklik;
-  // Widget buttonIcon;
+  final double yukseklik;
+  Widget buttonIcon;
   final VoidCallback onPressed;
 
-  const SocialLoginButton(
-      {Key? key,
-      required this.buttonText,
-      required this.buttonColor,
-      required this.textColor,
-      required this.radius,
-      //required this.yukseklik,
-      // required this.buttonIcon,
-      required this.onPressed})
-      : super(key: key);
-
+  SocialLoginButton({
+    required this.buttonText,
+    this.buttonColor: Colors.purple,
+    this.textColor: Colors.white,
+    this.radius: 16,
+    this.yukseklik: 50,
+    required this.buttonIcon,
+    required this.onPressed,
+    // assert ile buton textin null kullanılmaya çalışılması halinde hatanın kaynağını göstermek için kullanılır
+  }) : assert(buttonText != null);
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        primary: buttonColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(radius),
+    return Container(
+      margin: EdgeInsets.only(bottom: 8),
+      child: SizedBox(
+        height: yukseklik,
+        child: ElevatedButton(
+          onPressed: onPressed,
+          style: ElevatedButton.styleFrom(
+            primary: buttonColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(radius),
+              ),
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              buttonIcon,
+              Text(
+                buttonText,
+                style: TextStyle(color: textColor),
+              ),
+              Opacity(
+                child: buttonIcon,
+                opacity: 0,
+              )
+            ],
           ),
         ),
-      ),
-      child: Text(
-        buttonText,
-        style: TextStyle(color: textColor),
       ),
     );
   }

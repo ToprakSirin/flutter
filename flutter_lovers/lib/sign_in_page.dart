@@ -28,26 +28,28 @@ class SignInPage extends StatelessWidget {
             SizedBox(
               height: 8,
             ),
-            ElevatedButton(
+            SocialLoginButton(
+              buttonColor: Colors.white,
+              buttonText: "Gmail ile Giriş Yap",
+              textColor: Colors.black87,
+              buttonIcon: Image.asset("assets/images/google-logo.png"),
               onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                primary: Colors.red,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(10),
-                  ),
-                ),
-              ),
-              child: Text(
-                "Google ile Oturum Aç",
-                style: TextStyle(color: Colors.white),
-              ),
             ),
             SocialLoginButton(
               buttonColor: Color(0xFF334D92),
               buttonText: "Facebook ile Giriş Yap",
+              buttonIcon: Image.asset("assets/images/facebook-logo.png"),
               textColor: Colors.white,
               radius: 16,
+              onPressed: () {},
+            ),
+            SocialLoginButton(
+              buttonColor: Color(0xFF334D92),
+              buttonText: "Email ile Giriş Yap",
+              buttonIcon: Icon(
+                Icons.email,
+                size: 32,
+              ),
               onPressed: () {},
             ),
           ],
