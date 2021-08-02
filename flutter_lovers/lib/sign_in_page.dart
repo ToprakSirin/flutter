@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'common_widget/social_log_in_button.dart';
+
 class SignInPage extends StatelessWidget {
   const SignInPage({Key? key}) : super(key: key);
 
@@ -41,20 +43,12 @@ class SignInPage extends StatelessWidget {
                 style: TextStyle(color: Colors.white),
               ),
             ),
-            ElevatedButton(
+            SocialLoginButton(
+              buttonColor: Color(0xFF334D92),
+              buttonText: "Facebook ile Giriş Yap",
+              textColor: Colors.white,
+              radius: 16,
               onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                primary: Colors.red,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(10),
-                  ),
-                ),
-              ),
-              child: Text(
-                "Google ile Oturum Aç",
-                style: TextStyle(color: Colors.white),
-              ),
             ),
           ],
         ),
