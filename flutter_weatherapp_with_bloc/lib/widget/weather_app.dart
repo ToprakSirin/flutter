@@ -51,6 +51,7 @@ class WeatherApp extends StatelessWidget {
                   getirilenWeather.consolidatedWeather[0].weatherStateAbbr;
               /*    final _temaBloc = BlocProvider.of<TemaBloc>(context);
               _temaBloc.add(event); */
+              _kullanicininSectigiSehir = getirilenWeather.title;
               BlocProvider.of<TemaBloc>(context).add(
                   TemaDegistirEvent(havaDurumuKisaltmasi: havaDurumuKisaltma));
 
