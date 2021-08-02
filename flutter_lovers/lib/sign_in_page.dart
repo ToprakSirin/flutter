@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'common_widget/social_log_in_button.dart';
 
 class SignInPage extends StatelessWidget {
-  const SignInPage({Key? key}) : super(key: key);
-
+  Widget? buttonIcon;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,6 +49,14 @@ class SignInPage extends StatelessWidget {
                 Icons.email,
                 size: 32,
               ),
+              onPressed: () {},
+            ),
+            SocialLoginButton(
+              buttonIcon: Opacity(
+                child: buttonIcon,
+                opacity: 0,
+              ),
+              buttonText: "Email ile Giriş Yap",
               onPressed: () {},
             ),
           ],

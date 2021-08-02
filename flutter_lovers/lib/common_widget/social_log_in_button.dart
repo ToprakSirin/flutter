@@ -39,15 +39,26 @@ class SocialLoginButton extends StatelessWidget {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              buttonIcon,
-              Text(
-                buttonText,
-                style: TextStyle(color: textColor),
-              ),
-              Opacity(
-                child: buttonIcon,
-                opacity: 0,
-              )
+              //Spreads,Collection-if,Colletcion-For
+              if (buttonIcon != null) ...[
+                buttonIcon,
+                Text(
+                  buttonText,
+                  style: TextStyle(color: textColor),
+                ),
+                Opacity(
+                  child: buttonIcon,
+                  opacity: 0,
+                )
+              ],
+              if (buttonIcon == null) ...[
+                buttonIcon,
+                Text(
+                  buttonText,
+                  style: TextStyle(color: textColor),
+                ),
+                Container(),
+              ]
             ],
           ),
         ),
@@ -55,3 +66,20 @@ class SocialLoginButton extends StatelessWidget {
     );
   }
 }
+
+
+/*
+buttonIcon != null ? buttonIcon : Container(),
+              Text(
+                buttonText,
+                style: TextStyle(color: textColor),
+              ),
+              buttonIcon != null
+                  ? Opacity(
+                      child: buttonIcon,
+                      opacity: 0,
+                    )
+                  : Container(),
+
+
+ */
