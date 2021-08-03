@@ -1,8 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_lovers/model/user_model.dart';
-
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_lovers/services/auth_base.dart';
-
 
 class FirebaseAuthService implements AuthBase {
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -18,7 +17,7 @@ class FirebaseAuthService implements AuthBase {
   }
 
   MyUser _useFromFirebase(User user) {
-    return MyUser( user.uid);
+    return MyUser(user.uid);
   }
 
   @override
@@ -35,6 +34,11 @@ class FirebaseAuthService implements AuthBase {
   @override
   Future<bool> signOut() async {
     try {
+      final _googleSignIn = GoogleSignIn();
+      if (_googleSignIn.currentUser != null) {
+        await _googleSignIn.signOut();
+      }
+
       await _firebaseAuth.signOut();
       return true;
     } catch (e) {
@@ -43,8 +47,27 @@ class FirebaseAuthService implements AuthBase {
     }
   }
 
+  @override
+  Future<MyUser> signInWithGoogle() async {
+    GoogleSignIn _googleSignIn = GoogleSignIn();
+    GoogleSignInAccount? _googleUser = await _googleSignIn.signIn();
 
-  
-  
-  
+    if (_googleUser != null) {
+      GoogleSignInAuthentication _googleAuth = await _googleUser.authentication;
+      if (_googleAuth.idToken != null && _googleAuth.accessToken != null) {
+        UserCredential sonuc = await _firebaseAuth.signInWithCredential(
+          GoogleAuthProvider.credential(
+            idToken: _googleAuth.idToken,
+            accessToken: _googleAuth.accessToken,
+          ),
+        );
+        User? user = sonuc.user;
+        return _useFromFirebase(user!);
+      } else {
+        throw Exception();
+      }
+    } else {
+      throw Exception();
+    }
+  }
 }

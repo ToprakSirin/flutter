@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_lovers/locator.dart';
 import 'package:flutter_lovers/model/user_model.dart';
-import 'package:flutter_lovers/services/auth_base.dart';
-import 'package:flutter_lovers/services/fake_auth_service.dart';
-
+import 'package:flutter_lovers/viewmodel/user_model.dart';
+import 'package:provider/provider.dart';
 
 //sadece oturum açmış kullanıcıların görmesi gereken sayfa
 class HomePage extends StatelessWidget {
-  final Function onSignOut;
   final MyUser user;
-  AuthBase authService = locator<FakeAuthService>();
-  HomePage({required this.user, required this.onSignOut});
+
+  HomePage({
+    required this.user,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +17,7 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         actions: [
           TextButton(
-            onPressed: () => _cikisYap,
+            onPressed: () => _cikisYap(context),
             child: Text(
               "Çıkış Yap",
               style: TextStyle(color: Colors.white),
@@ -33,9 +32,10 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  _cikisYap() async {
-    bool sonuc = await authService.signOut();
-    onSignOut();
+  _cikisYap(BuildContext context) async {
+    final _userModel = Provider.of<UserModel>(context);
+    bool sonuc = await _userModel.signOut();
+
     return sonuc;
   }
 }

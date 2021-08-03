@@ -1,32 +1,28 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_lovers/model/user_model.dart';
-import 'package:flutter_lovers/services/auth_base.dart';
-import 'package:flutter_lovers/services/fake_auth_service.dart';
-
-
+import 'package:flutter_lovers/viewmodel/user_model.dart';
+import 'package:provider/provider.dart';
 import 'common_widget/social_log_in_button.dart';
-import 'locator.dart';
 
 class SignInPage extends StatelessWidget {
-  final Function(MyUser)? onSignIn;
-  AuthBase authService = locator<FakeAuthService>();
+ 
+  void _misafirGirisi(BuildContext context) async {
+    final _userModel = Provider.of<UserModel>(context);
+    MyUser _user = await _userModel.signInAnonymously();
 
-  SignInPage({
-    Key? key,
-    required this.onSignIn,
-  }) : super(key: key);
-
-  void _misafirGirisi() async {
-    MyUser _user = await authService.signInAnonymously();
-    onSignIn!(_user);
     print("Oturum açan user ıd: " + _user.userID.toString());
   }
+  
+ void  _googleIleGiris(BuildContext context) async{
+      final _userModel = Provider.of<UserModel>(context);
+    MyUser _user = await _userModel.signInWithGoogle();
+
+    print("Oturum açan user ıd: " + _user.userID.toString());
+ }
 
   @override
   Widget build(BuildContext context) {
-    Widget? buttonIcon;
+   
     return Scaffold(
       appBar: AppBar(
         title: Text("Flutter Lovers"),
@@ -53,7 +49,7 @@ class SignInPage extends StatelessWidget {
               buttonText: "Gmail ile Giriş Yap",
               textColor: Colors.black87,
               buttonIcon: Image.asset("assets/images/google-logo.png"),
-              onPressed: () {},
+              onPressed: () =>_googleIleGiris(context),
             ),
             SocialLoginButton(
               buttonColor: Color(0xFF334D92),
@@ -72,14 +68,15 @@ class SignInPage extends StatelessWidget {
               ),
               onPressed: () {},
             ),
-            SocialLoginButton(
-              buttonIcon: Icon(Icons.supervised_user_circle),
-              buttonText: "Misafir Girişi",
-              onPressed: _misafirGirisi,
+          SocialLoginButton(
+              buttonText: "Misafir girişi",
+              buttonColor: Colors.orange,
+              onPressed: () => _misafirGirisi(context),
             ),
           ],
         ),
       ),
     );
   }
+
 }

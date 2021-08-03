@@ -18,5 +18,9 @@ class FakeAuthService implements AuthBase {
     return Future.value(true);
   }
 
-  
+  @override
+  Future<MyUser> signInWithGoogle() {
+    // TODO: implement SingletonFlutterWindowthGoogle
+    throw UnimplementedError();
+  }
 }
