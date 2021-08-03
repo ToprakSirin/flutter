@@ -1,28 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_lovers/app/sign_in/email_sifre_giris_ve_kayit.dart';
 import 'package:flutter_lovers/model/user_model.dart';
 import 'package:flutter_lovers/viewmodel/user_model.dart';
 import 'package:provider/provider.dart';
-import 'common_widget/social_log_in_button.dart';
+import '../../common_widget/social_log_in_button.dart';
 
 class SignInPage extends StatelessWidget {
- 
   void _misafirGirisi(BuildContext context) async {
     final _userModel = Provider.of<UserModel>(context);
     MyUser _user = await _userModel.signInAnonymously();
 
     print("Oturum açan user ıd: " + _user.userID.toString());
   }
-  
- void  _googleIleGiris(BuildContext context) async{
-      final _userModel = Provider.of<UserModel>(context);
+
+  void _googleIleGiris(BuildContext context) async {
+    final _userModel = Provider.of<UserModel>(context);
     MyUser _user = await _userModel.signInWithGoogle();
 
     print("Oturum açan user ıd: " + _user.userID.toString());
- }
+  }
+
+  void _emailveSifreGiris(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (context) => EmailveSifreLoginPage(),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-   
     return Scaffold(
       appBar: AppBar(
         title: Text("Flutter Lovers"),
@@ -49,7 +57,7 @@ class SignInPage extends StatelessWidget {
               buttonText: "Gmail ile Giriş Yap",
               textColor: Colors.black87,
               buttonIcon: Image.asset("assets/images/google-logo.png"),
-              onPressed: () =>_googleIleGiris(context),
+              onPressed: () => _googleIleGiris(context),
             ),
             SocialLoginButton(
               buttonColor: Color(0xFF334D92),
@@ -66,9 +74,9 @@ class SignInPage extends StatelessWidget {
                 Icons.email,
                 size: 32,
               ),
-              onPressed: () {},
+              onPressed: () => _emailveSifreGiris(context),
             ),
-          SocialLoginButton(
+            SocialLoginButton(
               buttonText: "Misafir girişi",
               buttonColor: Colors.orange,
               onPressed: () => _misafirGirisi(context),
@@ -78,5 +86,4 @@ class SignInPage extends StatelessWidget {
       ),
     );
   }
-
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_lovers/landing.page.dart';
+import 'package:flutter_lovers/app/landing.page.dart';
 import 'package:flutter_lovers/locator.dart';
 
 import 'package:firebase_core/firebase_core.dart';
