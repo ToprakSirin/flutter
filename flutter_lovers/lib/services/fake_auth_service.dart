@@ -23,4 +23,16 @@ class FakeAuthService implements AuthBase {
     // TODO: implement SingletonFlutterWindowthGoogle
     throw UnimplementedError();
   }
+
+  @override
+  Future<MyUser> createUserWithEmailandPassword(String email, String sifre) {
+    // TODO: implement createUserWithEmailandPassword
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<MyUser> signInWithEmailandPassword(String email, String sifre) {
+    // TODO: implement signInWithEmailandPassword
+    throw UnimplementedError();
+  }
 }

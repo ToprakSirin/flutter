@@ -70,4 +70,29 @@ class FirebaseAuthService implements AuthBase {
       throw Exception();
     }
   }
+
+  @override
+  Future<MyUser> createUserWithEmailandPassword(
+      String email, String sifre) async {
+    try {
+      UserCredential sonuc = await _firebaseAuth.createUserWithEmailAndPassword(
+          email: email, password: sifre);
+      return _useFromFirebase(sonuc.user!);
+    } catch (e) {
+      print("Hata anonmyously: $e");
+      throw Exception(e);
+    }
+  }
+
+  @override
+  Future<MyUser> signInWithEmailandPassword(String email, String sifre) async {
+    try {
+      UserCredential sonuc = await _firebaseAuth.signInWithEmailAndPassword(
+          email: email, password: sifre);
+      return _useFromFirebase(sonuc.user!);
+    } catch (e) {
+      print("Hata anonmyously: $e");
+      throw Exception(e);
+    }
+  }
 }

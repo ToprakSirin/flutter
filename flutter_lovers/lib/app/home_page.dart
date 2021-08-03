@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_lovers/model/user_model.dart';
-import 'package:flutter_lovers/viewmodel/user_model.dart';
+import 'package:flutter_lovers/viewmodel/user_view_model.dart';
 import 'package:provider/provider.dart';
 
 //sadece oturum açmış kullanıcıların görmesi gereken sayfa
@@ -33,7 +33,7 @@ class HomePage extends StatelessWidget {
   }
 
   _cikisYap(BuildContext context) async {
-    final _userModel = Provider.of<UserModel>(context);
+    final _userModel = Provider.of<UserViewModel>(context);
     bool sonuc = await _userModel.signOut();
 
     return sonuc;

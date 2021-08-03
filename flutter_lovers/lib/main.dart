@@ -3,7 +3,7 @@ import 'package:flutter_lovers/app/landing.page.dart';
 import 'package:flutter_lovers/locator.dart';
 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_lovers/viewmodel/user_model.dart';
+import 'package:flutter_lovers/viewmodel/user_view_model.dart';
 import 'package:provider/provider.dart';
 
 
@@ -14,14 +14,12 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Lovers',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.purple,
-      ),
       home: App(),
     );
   }
@@ -77,7 +75,7 @@ class _AppState extends State<App> {
     }
 
     return ChangeNotifierProvider(
-      create: (BuildContext context) => UserModel(),
+      create: (BuildContext context) => UserViewModel(),
       child: LandingPage(),
     );
   }

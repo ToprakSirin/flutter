@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_lovers/app/sign_in/email_sifre_giris_ve_kayit.dart';
 import 'package:flutter_lovers/model/user_model.dart';
-import 'package:flutter_lovers/viewmodel/user_model.dart';
+import 'package:flutter_lovers/viewmodel/user_view_model.dart';
 import 'package:provider/provider.dart';
 import '../../common_widget/social_log_in_button.dart';
 
 class SignInPage extends StatelessWidget {
   void _misafirGirisi(BuildContext context) async {
-    final _userModel = Provider.of<UserModel>(context);
+    final _userModel = Provider.of<UserViewModel>(context);
     MyUser _user = await _userModel.signInAnonymously();
 
     print("Oturum açan user ıd: " + _user.userID.toString());
   }
 
   void _googleIleGiris(BuildContext context) async {
-    final _userModel = Provider.of<UserModel>(context);
+    final _userModel = Provider.of<UserViewModel>(context);
     MyUser _user = await _userModel.signInWithGoogle();
 
     print("Oturum açan user ıd: " + _user.userID.toString());

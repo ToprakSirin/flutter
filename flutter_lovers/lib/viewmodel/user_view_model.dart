@@ -6,7 +6,7 @@ import 'package:flutter_lovers/services/auth_base.dart';
 
 enum ViewState { Idle, Busy }
 
-class UserModel with ChangeNotifier implements AuthBase {
+class UserViewModel with ChangeNotifier implements AuthBase {
   ViewState _state = ViewState.Idle;
   UserRepository _userRepository = locator<UserRepository>();
   MyUser? _user;
@@ -20,7 +20,7 @@ class UserModel with ChangeNotifier implements AuthBase {
     notifyListeners();
   }
 
-  UserModel() {
+  UserViewModel() {
     currentUser();
   }
 
@@ -75,6 +75,36 @@ class UserModel with ChangeNotifier implements AuthBase {
       return user!;
     } catch (e) {
       print("Hata usermodel signInWithGoogle çıktı ");
+      throw Exception(e);
+    } finally {
+      state = ViewState.Idle;
+    }
+  }
+
+  @override
+  Future<MyUser> createUserWithEmailandPassword(
+      String email, String sifre) async {
+    try {
+      state = ViewState.Busy;
+      _user =
+          await _userRepository.createUserWithEmailandPassword(email, sifre);
+      return user!;
+    } catch (e) {
+      print("Hata usermodel createUserWithEmailandPassword çıktı ");
+      throw Exception(e);
+    } finally {
+      state = ViewState.Idle;
+    }
+  }
+
+  @override
+  Future<MyUser> signInWithEmailandPassword(String email, String sifre) async {
+    try {
+      state = ViewState.Busy;
+      _user = await _userRepository.signInWithEmailandPassword(email, sifre);
+      return user!;
+    } catch (e) {
+      print("Hata usermodel signInWithEmailandPassword çıktı ");
       throw Exception(e);
     } finally {
       state = ViewState.Idle;
