@@ -19,20 +19,18 @@ class FakeAuthService implements AuthBase {
   }
 
   @override
-  Future<MyUser> signInWithGoogle() {
-    // TODO: implement SingletonFlutterWindowthGoogle
-    throw UnimplementedError();
+  Future<MyUser> createUserWithEmailandPassword(
+      String email, String sifre) async {
+    return await Future.delayed(Duration(seconds: 2), () => MyUser(userID));
   }
 
   @override
-  Future<MyUser> createUserWithEmailandPassword(String email, String sifre) {
-    // TODO: implement createUserWithEmailandPassword
-    throw UnimplementedError();
+  Future<MyUser> signInWithEmailandPassword(String email, String sifre) async {
+    return await Future.delayed(Duration(seconds: 2), () => MyUser(userID));
   }
 
   @override
-  Future<MyUser> signInWithEmailandPassword(String email, String sifre) {
-    // TODO: implement signInWithEmailandPassword
-    throw UnimplementedError();
+  Future<MyUser> signInWithGoogle() async {
+    return await Future.delayed(Duration(seconds: 2), () => MyUser(userID));
   }
 }

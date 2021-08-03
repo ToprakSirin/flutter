@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_lovers/app/home_page.dart';
+
 import 'package:flutter_lovers/common_widget/social_log_in_button.dart';
 import 'package:flutter_lovers/model/user_model.dart';
 import 'package:flutter_lovers/viewmodel/user_view_model.dart';
@@ -55,16 +55,6 @@ class _EmailveSifreLoginPageState extends State<EmailveSifreLoginPage> {
 
     final _userModel = Provider.of<UserViewModel>(context);
 
-    /* if (_userModel.state == ViewState.Idle) {
-      if (_userModel.user != null) {
-        return HomePage(user: _userModel.user!);
-      }
-    } else {
-      return Center(
-        child: CircularProgressIndicator(),
-      );
-    } */
-
     if (_userModel.user != null) {
       Future.delayed(Duration(milliseconds: 200), () {
         Navigator.of(context).pop();
@@ -87,6 +77,9 @@ class _EmailveSifreLoginPageState extends State<EmailveSifreLoginPage> {
                         initialValue: "emre@emre.com",
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
+                          errorText: _userModel.emailHataMesaji != null
+                              ? _userModel.emailHataMesaji
+                              : null,
                           prefixIcon: Icon(Icons.mail),
                           hintText: 'Email',
                           labelText: 'Email',
@@ -103,6 +96,9 @@ class _EmailveSifreLoginPageState extends State<EmailveSifreLoginPage> {
                         initialValue: "password",
                         obscureText: true,
                         decoration: InputDecoration(
+                          errorText: _userModel.sifreHataMesaji != null
+                              ? _userModel.sifreHataMesaji
+                              : null,
                           prefixIcon: Icon(Icons.mail),
                           hintText: 'Şifre',
                           labelText: 'Şifre',
@@ -116,6 +112,7 @@ class _EmailveSifreLoginPageState extends State<EmailveSifreLoginPage> {
                         height: 8,
                       ),
                       SocialLoginButton(
+                        buttonIcon: Icon(Icons.format_align_center),
                         buttonText: _butonText!,
                         buttonColor: Theme.of(context).primaryColor,
                         radius: 20,

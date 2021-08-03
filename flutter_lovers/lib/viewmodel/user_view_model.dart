@@ -4,13 +4,14 @@ import 'package:flutter_lovers/model/user_model.dart';
 import 'package:flutter_lovers/repository/user_repository.dart';
 import 'package:flutter_lovers/services/auth_base.dart';
 
-
 enum ViewState { Idle, Busy }
 
 class UserViewModel with ChangeNotifier implements AuthBase {
   ViewState _state = ViewState.Idle;
   UserRepository _userRepository = locator<UserRepository>();
   MyUser? _user;
+  String? emailHataMesaji;
+  String? sifreHataMesaji;
 
   MyUser? get user => _user;
 
@@ -86,10 +87,14 @@ class UserViewModel with ChangeNotifier implements AuthBase {
   Future<MyUser> createUserWithEmailandPassword(
       String email, String sifre) async {
     try {
-      state = ViewState.Busy;
-      _user =
-          await _userRepository.createUserWithEmailandPassword(email, sifre);
-      return user!;
+      if (_emailSifreKontrol(email, sifre)) {
+        state = ViewState.Busy;
+        _user =
+            await _userRepository.createUserWithEmailandPassword(email, sifre);
+        return user!;
+      } else {
+        return null!;
+      }
     } catch (e) {
       print("Hata usermodel createUserWithEmailandPassword çıktı ");
       throw Exception(e);
@@ -101,14 +106,32 @@ class UserViewModel with ChangeNotifier implements AuthBase {
   @override
   Future<MyUser> signInWithEmailandPassword(String email, String sifre) async {
     try {
-      state = ViewState.Busy;
-      _user = await _userRepository.signInWithEmailandPassword(email, sifre);
-      return user!;
+      if (_emailSifreKontrol(email, sifre)) {
+        state = ViewState.Busy;
+        _user = await _userRepository.signInWithEmailandPassword(email, sifre);
+        return user!;
+      } else {
+        return null!;
+      }
     } catch (e) {
       print("Hata usermodel signInWithEmailandPassword çıktı ");
       throw Exception(e);
     } finally {
       state = ViewState.Idle;
     }
+  }
+
+  bool _emailSifreKontrol(String email, String sifre) {
+    var sonuc = true;
+    if (sifre.length < 6) {
+      sifreHataMesaji = "En az 6 karakter olmalı";
+      sonuc = false;
+    } else
+      sifreHataMesaji = null;
+    if (!email.contains('@')) {
+      emailHataMesaji = "Geçersiz mail adresi";
+      sonuc = false;
+    }
+    return sonuc;
   }
 }

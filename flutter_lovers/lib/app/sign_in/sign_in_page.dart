@@ -77,6 +77,7 @@ class SignInPage extends StatelessWidget {
               onPressed: () => _emailveSifreGiris(context),
             ),
             SocialLoginButton(
+              buttonIcon: Icon(Icons.add),
               buttonText: "Misafir girişi",
               buttonColor: Colors.orange,
               onPressed: () => _misafirGirisi(context),
