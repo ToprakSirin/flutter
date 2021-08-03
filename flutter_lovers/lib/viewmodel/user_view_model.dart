@@ -4,6 +4,7 @@ import 'package:flutter_lovers/model/user_model.dart';
 import 'package:flutter_lovers/repository/user_repository.dart';
 import 'package:flutter_lovers/services/auth_base.dart';
 
+
 enum ViewState { Idle, Busy }
 
 class UserViewModel with ChangeNotifier implements AuthBase {

@@ -6,7 +6,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_lovers/viewmodel/user_view_model.dart';
 import 'package:provider/provider.dart';
 
-
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   setupLocator();
@@ -26,57 +25,44 @@ class MyApp extends StatelessWidget {
 }
 
 class App extends StatefulWidget {
+  // Create the initialization Future outside of `build`:
+  @override
   _AppState createState() => _AppState();
 }
 
 class _AppState extends State<App> {
-  // Set default `_initialized` and `_error` state to false
-  bool _initialized = false;
-  bool _error = false;
-
-  // Define an async function to initialize FlutterFire
-  void initializeFlutterFire() async {
-    try {
-      // Wait for Firebase to initialize and set `_initialized` state to true
-      await Firebase.initializeApp();
-      setState(() {
-        _initialized = true;
-      });
-    } catch (e) {
-      // Set `_error` state to true if Firebase initialization fails
-      setState(() {
-        _error = true;
-      });
-    }
-  }
-
-  @override
-  void initState() {
-    initializeFlutterFire();
-    super.initState();
-  }
+  /// The future is part of the state of our widget. We should not call `initializeApp`
+  /// directly inside [build].
+  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
 
   @override
   Widget build(BuildContext context) {
-    // Show error message if initialization failed
-    if (_error) {
-      return Scaffold(
-        body: Center(
-          child: Text("HATA $_error"),
-        ),
-      );
-    }
+    return FutureBuilder(
+      // Initialize FlutterFire:
+      future: _initialization,
+      builder: (context, snapshot) {
+        // Check for errors
+        if (snapshot.hasError) {
+          return Scaffold(
+            body: Center(
+              child: Text("HATA "),
+            ),
+          );
+        }
 
-    // Show a loader until FlutterFire is initialized
-    if (!_initialized) {
-      return Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
-    }
+        // Once complete, show your application
+        if (snapshot.connectionState == ConnectionState.done) {
+          return ChangeNotifierProvider(
+            create: (BuildContext context) => UserViewModel(),
+            child: LandingPage(),
+          );
+        }
 
-    return ChangeNotifierProvider(
-      create: (BuildContext context) => UserViewModel(),
-      child: LandingPage(),
+        // Otherwise, show something whilst waiting for initialization to complete
+        return Scaffold(
+          body: Center(child: CircularProgressIndicator()),
+        );
+      },
     );
   }
 }

@@ -8,5 +8,5 @@ GetIt locator = GetIt.asNewInstance();
 void setupLocator() {
   locator.registerLazySingleton(() => FirebaseAuthService());
   locator.registerLazySingleton(() => FakeAuthService());
-   locator.registerLazySingleton(() => UserViewModel());
+  locator.registerLazySingleton(() => UserViewModel());
 }

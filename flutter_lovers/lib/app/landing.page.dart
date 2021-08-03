@@ -12,9 +12,9 @@ class LandingPage extends StatelessWidget {
     final _userModel = Provider.of<UserViewModel>(context);
     if (_userModel.state == ViewState.Idle) {
       if (_userModel.user != null) {
-        return HomePage(user: _userModel.user!);
-      } else {
         return SignInPage();
+      } else {
+        return HomePage(user: _userModel.user!);
       }
     } else {
       return Scaffold(body: Center(child: CircularProgressIndicator()));
