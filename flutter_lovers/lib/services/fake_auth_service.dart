@@ -17,4 +17,6 @@ class FakeAuthService implements AuthBase {
   Future<bool> signOut() {
     return Future.value(true);
   }
+
+  
 }
