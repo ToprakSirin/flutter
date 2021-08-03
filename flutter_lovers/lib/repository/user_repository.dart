@@ -3,12 +3,14 @@ import 'package:flutter_lovers/model/user_model.dart';
 import 'package:flutter_lovers/services/auth_base.dart';
 import 'package:flutter_lovers/services/fake_auth_service.dart';
 import 'package:flutter_lovers/services/firebase_auth.service.dart';
+import 'package:flutter_lovers/services/firestore_db_service.dart';
 
 enum AppMode { DEBUG, RELASE }
 
 class UserRepository implements AuthBase {
   FirebaseAuthService _firebaseAuthService = locator<FirebaseAuthService>();
   FakeAuthService _fakeAuthService = locator<FakeAuthService>();
+  FirestoreDBService _firestoreDBService = locator<FirestoreDBService>();
 
   AppMode appMode = AppMode.RELASE;
 
@@ -55,8 +57,13 @@ class UserRepository implements AuthBase {
       return await _fakeAuthService.createUserWithEmailandPassword(
           email, sifre);
     } else {
-      return await _firebaseAuthService.createUserWithEmailandPassword(
+      MyUser _user = await _firebaseAuthService.createUserWithEmailandPassword(
           email, sifre);
+      bool _sonuc = await _firestoreDBService.saveUser(_user);
+      if (_sonuc) {
+        return _user;
+      } else
+        return null!;
     }
   }
 

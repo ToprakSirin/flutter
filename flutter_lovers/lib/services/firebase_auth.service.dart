@@ -51,11 +51,11 @@ class FirebaseAuthService implements AuthBase {
   Future<MyUser> signInWithGoogle() async {
     GoogleSignIn _googleSignIn = GoogleSignIn();
     GoogleSignInAccount? _googleUser = await _googleSignIn.signIn();
-
+    UserCredential? sonuc;
     if (_googleUser != null) {
       GoogleSignInAuthentication _googleAuth = await _googleUser.authentication;
       if (_googleAuth.idToken != null && _googleAuth.accessToken != null) {
-        UserCredential sonuc = await _firebaseAuth.signInWithCredential(
+        sonuc = await _firebaseAuth.signInWithCredential(
           GoogleAuthProvider.credential(
             idToken: _googleAuth.idToken,
             accessToken: _googleAuth.accessToken,
