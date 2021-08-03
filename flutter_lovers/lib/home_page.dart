@@ -1,19 +1,19 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_lovers/locator.dart';
 import 'package:flutter_lovers/model/user_model.dart';
 import 'package:flutter_lovers/services/auth_base.dart';
+import 'package:flutter_lovers/services/fake_auth_service.dart';
+
 
 //sadece oturum açmış kullanıcıların görmesi gereken sayfa
 class HomePage extends StatelessWidget {
-  final AuthBase authService;
   final Function onSignOut;
   final MyUser user;
-
-  HomePage({required this.user,required this.authService, required this.onSignOut});
+  AuthBase authService = locator<FakeAuthService>();
+  HomePage({required this.user, required this.onSignOut});
 
   @override
   Widget build(BuildContext context) {
-  
     return Scaffold(
       appBar: AppBar(
         actions: [
