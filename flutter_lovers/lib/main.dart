@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_lovers/services/firebase_auth.service.dart';
 import 'package:flutter_lovers/sign_in_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'landing.page.dart';
@@ -51,7 +52,7 @@ class _AppState extends State<App> {
 
         // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
-          return LandingPage();
+          return LandingPage(authService: FirebaseAuthService(),);
         }
 
         // Otherwise, show something whilst waiting for initialization to complete
