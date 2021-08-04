@@ -9,7 +9,7 @@ class MyUser {
   String? profilURL;
   DateTime? creadeAt;
   DateTime? updatedAt;
-  int? seviye;
+  String ? seviye;
 
   MyUser({required this.userID, required this.email});
 

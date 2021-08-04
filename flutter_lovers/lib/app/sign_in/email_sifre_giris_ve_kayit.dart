@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_lovers/app/hata_exception.dart';
 
 import 'package:flutter_lovers/common_widget/social_log_in_button.dart';
 import 'package:flutter_lovers/model/user.dart';
@@ -24,15 +26,40 @@ class _EmailveSifreLoginPageState extends State<EmailveSifreLoginPage> {
     _formKey.currentState!.save();
     print("Email: $_email Sifre: $_sifre");
     if (_formType == FormType.Login) {
-      MyUser _girisYapanUser =
-          await _userModel.signInWithEmailandPassword(_email!, _sifre!);
-      //  if (_girisYapanUser != null)
-      //  print("Oturum açan user id:" + _girisYapanUser.userID.toString());
+      try {
+        MyUser _girisYapanUser =
+            await _userModel.signInWithEmailandPassword(_email!, _sifre!);
+        if (_girisYapanUser != null)
+          print("Oturum açan user id:" + _girisYapanUser.userID.toString());
+      } on PlatformException catch (e) {
+        debugPrint("Widget oturum hata yakalandı" + e.code.toString());
+      }
     } else {
-      MyUser _olusturulanUser =
-          await _userModel.createUserWithEmailandPassword(_email!, _sifre!);
-      //   if (_olusturulanUser != null)
-      //print("Oluşturulan:" + _olusturulanUser.userID.toString());
+      try {
+        MyUser _olusturulanUser =
+            await _userModel.createUserWithEmailandPassword(_email!, _sifre!);
+        if (_olusturulanUser != null)
+          print("Oturum açan user id: :" + _olusturulanUser.userID.toString());
+      } on PlatformException catch (e) {
+        debugPrint("Widget kullanıcı oluşturma hata yakalandı" +
+            Hatalar.goster(e.code));
+
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text("Kullanıcı Oluşturma Hata"),
+                content: Text(Hatalar.goster(e.code)),
+                actions: [
+                  TextButton(
+                      child: Text("Tamam"),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      })
+                ],
+              );
+            });
+      }
     }
   }
 
