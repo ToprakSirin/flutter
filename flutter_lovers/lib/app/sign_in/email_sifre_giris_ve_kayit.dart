@@ -30,7 +30,13 @@ class _EmailveSifreLoginPageState extends State<EmailveSifreLoginPage> {
     if (_formType == FormType.LOGIN) {
       try {
         await _userModel.signInWithEmailAndPassword(_email!, _password!);
-      } catch (e) {}
+      } on PlatformException catch (e) {
+        PlatformDuyarliAlertDialog(
+          baslik: "Oturum Açma hata",
+          icerik: Hatalar.goster(e.code),
+          anaButonYazisi: "Tamam",
+        ).goster(context);
+      }
     } else {
       try {
         await _userModel.createUserWithEmailAndPassword(_email!, _password!);

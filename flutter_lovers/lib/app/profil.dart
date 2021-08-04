@@ -14,6 +14,7 @@ class _ProfilPageState extends State<ProfilPage> {
   @override
   Widget build(BuildContext context) {
     final _userModel = Provider.of<UserViewModel>(context);
+    print("Profil sayfasındaki user değerleri" + _userModel.user.toString());
     return Scaffold(
       appBar: AppBar(
         title: Text("Profil"),

@@ -1,20 +1,14 @@
 class Hatalar {
   static String goster(String hataKodu) {
- switch (hataKodu) {
-      case 'email-already-in-use':
-        return "Bu mail adresi zaten kullanımda, lütfen farklı bir mail kullanınız";
-
-      case 'user-not-found':
-        return "Bu kullanıcı sistemde bulunmamaktadır. Lütfen önce kullanıcı oluşturunuz";
-
-      case 'account-exists-with-different-credential':
-        return "Facebook hesabınızdaki mail adresi daha önce gmail veya email yöntemi ile sisteme kaydedilmiştir. Lütfen bu mail adresi ile giriş yapın";
-      case 'too-many-requests':
-        return "Yavaş gırdın gırdın, az bekle sonra tekrar denersin";
-      case 'wrong-password':
-        return "Email veya şifre yanlış";
+    switch (hataKodu) {
+      case "[firebase_auth/emaıl-already-ın-use] The email address is already in use by another account.":
+        return "Bu mail adresi zaten kullanılmakta";
+      case "[firebase_auth/user-not-found] There is no user record corresponding to this identifier. The user may have been deleted.":
+        return "Bu mail adresi ile hesap bulunamadı";
+      case "[firebase_auth/wrong-password] The password is invalid or the user does not have a password.":
+        return "Hatalı şifre";
       default:
-        return "Bir hata olustu";
+        return "Bir hata oluştu";
     }
   }
 }
