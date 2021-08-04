@@ -24,4 +24,22 @@ class FirestoreDBService implements DBBase {
     print("Okunan  User nesnesi: " + _okunanUserNesnesi.toString());
     return _okunanUserNesnesi;
   }
+
+  @override
+  Future<bool> updateUserName(String userID, String yeniUserName) async {
+    QuerySnapshot user = await _firebaseDB
+        .collection("users")
+        .where("userName", isEqualTo: yeniUserName)
+        .get();
+    //aynı isimde kullanıcı var demektir
+    if (user.docs.length >= 1) {
+      return false;
+    } else {
+      await _firebaseDB
+          .collection("users")
+          .doc(userID)
+          .update({"userName": yeniUserName});
+      return true;
+    }
+  }
 }

@@ -92,8 +92,8 @@ class UserViewModel with ChangeNotifier implements UserRepository {
     if (_emailAndPasswordValidate(email, password)) {
       try {
         state = ViewState.Busy;
-        _user =
-            await _userRepostory.createUserWithEmailAndPassword(email, password);
+        _user = await _userRepostory.createUserWithEmailAndPassword(
+            email, password);
         return user!;
       } finally {
         state = ViewState.Idle;
@@ -107,7 +107,8 @@ class UserViewModel with ChangeNotifier implements UserRepository {
     try {
       if (_emailAndPasswordValidate(email, password)) {
         state = ViewState.Busy;
-        _user = await _userRepostory.signInWithEmailAndPassword(email, password);
+        _user =
+            await _userRepostory.signInWithEmailAndPassword(email, password);
         return user!;
       }
     } finally {
@@ -130,6 +131,12 @@ class UserViewModel with ChangeNotifier implements UserRepository {
     } else {
       emailErrorMessage = null;
     }
+    return sonuc;
+  }
+
+  Future<bool> updateUserName(String userID, String yeniUserName) async {
+    bool sonuc = await _userRepostory.updateUserName(userID, yeniUserName);
+
     return sonuc;
   }
 }
