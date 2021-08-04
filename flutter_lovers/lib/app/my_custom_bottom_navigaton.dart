@@ -5,9 +5,13 @@ import 'package:flutter_lovers/app/tabs_item.dart';
 class MyCustomBottomNavigaton extends StatelessWidget {
   final TabItem currentTab;
   final ValueChanged<TabItem> onSelectedTab;
+  final Map<TabItem, Widget> sayfaOlusturucu;
 
   const MyCustomBottomNavigaton(
-      {Key? key, required this.currentTab, required this.onSelectedTab})
+      {Key? key,
+      required this.currentTab,
+      required this.onSelectedTab,
+      required this.sayfaOlusturucu})
       : super(key: key);
 
   @override
@@ -18,10 +22,18 @@ class MyCustomBottomNavigaton extends StatelessWidget {
           _navItemOlustur(TabItem.Kullanicilar),
           _navItemOlustur(TabItem.Profil),
         ],
+        onTap: (index) => onSelectedTab(TabItem.values[index]),
       ),
+      tabBuilder: (context, index) {
+        final gosterilecekItem = TabItem.values[index];
+        return CupertinoTabView(builder: (context) {
+          return sayfaOlusturucu[gosterilecekItem]!;
+        });
+      },
     );
   }
-BottomNavigationBarItem _navItemOlustur(TabItem tabItem) {
+
+  BottomNavigationBarItem _navItemOlustur(TabItem tabItem) {
     final _olusturulacakTab = TabItemData.tumTablar[tabItem];
     return BottomNavigationBarItem(
       icon: Icon(_olusturulacakTab!.icon),
