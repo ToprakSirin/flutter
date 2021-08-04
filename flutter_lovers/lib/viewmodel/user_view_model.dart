@@ -6,7 +6,7 @@ import 'package:flutter_lovers/services/auth_base.dart';
 
 enum ViewState { Idle, Busy }
 
-class UserViewModel with ChangeNotifier implements AuthBase {
+class UserViewModel with ChangeNotifier implements UserRepository {
   ViewState _state = ViewState.Idle;
   UserRepository _userRepository = locator<UserRepository>();
   MyUser? _user;
@@ -17,6 +17,7 @@ class UserViewModel with ChangeNotifier implements AuthBase {
   MyUser? get user => _user;
 
   ViewState get state => _state;
+
   UserViewModel() {
     currentUser();
   }
@@ -47,7 +48,7 @@ class UserViewModel with ChangeNotifier implements AuthBase {
       return user!;
     } catch (e) {
       debugPrint("Viewmodeldeki current user hata:" + e.toString());
-      throw Exception();
+      throw Exception(e);
     } finally {
       state = ViewState.Idle;
     }
@@ -73,7 +74,10 @@ class UserViewModel with ChangeNotifier implements AuthBase {
     try {
       state = ViewState.Busy;
       _user = await _userRepository.signInWithGoogle();
-      return user!;
+      if (_user != null)
+        return _user!;
+      else
+        throw Exception();
     } catch (e) {
       print("Hata userViewmodel signin google");
       throw Exception(e);
@@ -96,7 +100,7 @@ class UserViewModel with ChangeNotifier implements AuthBase {
         state = ViewState.Idle;
       }
     } else
-      return null!;
+      throw Exception();
   }
 
   @override
@@ -114,7 +118,7 @@ class UserViewModel with ChangeNotifier implements AuthBase {
   }
 
   bool _emailSifreKontrol(String email, String sifre) {
-    var sonuc = true;
+    bool sonuc = true;
     if (sifre.length < 6) {
       passwordErrorMessage = "En az 6 karakter olmalı";
       sonuc = false;

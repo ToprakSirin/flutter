@@ -12,11 +12,11 @@ class UserRepository implements AuthBase {
   FakeAuthService _fakeAuthService = locator<FakeAuthService>();
   FirestoreDBService _firestoreDBService = locator<FirestoreDBService>();
 
-  AppMode appMode = AppMode.RELASE;
+  AppMode _appMode = AppMode.RELASE;
 
   @override
   Future<MyUser> currentUser() async {
-    if (appMode == AppMode.DEBUG) {
+    if (_appMode == AppMode.DEBUG) {
       return await _fakeAuthService.currentUser();
     } else {
       return await _firebaseAuthService.currentUser();
@@ -25,7 +25,7 @@ class UserRepository implements AuthBase {
 
   @override
   Future<MyUser> signInAnonymously() async {
-    if (appMode == AppMode.DEBUG) {
+    if (_appMode == AppMode.DEBUG) {
       return await _fakeAuthService.signInAnonymously();
     } else {
       return await _firebaseAuthService.signInAnonymously();
@@ -34,7 +34,7 @@ class UserRepository implements AuthBase {
 
   @override
   Future<bool> signOut() async {
-    if (appMode == AppMode.DEBUG) {
+    if (_appMode == AppMode.DEBUG) {
       return await _fakeAuthService.signOut();
     } else {
       return await _firebaseAuthService.signOut();
@@ -43,7 +43,7 @@ class UserRepository implements AuthBase {
 
   @override
   Future<MyUser> signInWithGoogle() async {
-    if (appMode == AppMode.DEBUG) {
+    if (_appMode == AppMode.DEBUG) {
       return await _fakeAuthService.signInWithGoogle();
     } else {
       MyUser _user = await _firebaseAuthService.signInWithGoogle();
@@ -51,14 +51,14 @@ class UserRepository implements AuthBase {
       if (_sonuc) {
         return _user;
       } else
-        return null!;
+        throw Exception();
     }
   }
 
   @override
   Future<MyUser> createUserWithEmailandPassword(
       String email, String sifre) async {
-    if (appMode == AppMode.DEBUG) {
+    if (_appMode == AppMode.DEBUG) {
       return await _fakeAuthService.createUserWithEmailandPassword(
           email, sifre);
     } else {
@@ -68,13 +68,13 @@ class UserRepository implements AuthBase {
       if (_sonuc) {
         return _user;
       } else
-        return null!;
+        throw Exception();
     }
   }
 
   @override
   Future<MyUser> signInWithEmailandPassword(String email, String sifre) async {
-    if (appMode == AppMode.DEBUG) {
+    if (_appMode == AppMode.DEBUG) {
       return await _fakeAuthService.signInWithEmailandPassword(email, sifre);
     } else {
       return await _firebaseAuthService.signInWithEmailandPassword(

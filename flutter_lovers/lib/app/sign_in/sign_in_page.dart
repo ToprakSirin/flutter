@@ -6,21 +6,17 @@ import 'package:provider/provider.dart';
 import '../../common_widget/social_log_in_button.dart';
 
 class SignInPage extends StatelessWidget {
-  void _misafirGirisi(BuildContext context) async {
-    final _userModel = Provider.of<UserViewModel>(context);
-    MyUser _user = await _userModel.signInAnonymously();
-
+  void _misafirGirisi(UserViewModel userModel) async {
+    MyUser _user = await userModel.signInAnonymously();
     print("Oturum açan user ıd: " + _user.userID.toString());
   }
 
-  void _googleIleGiris(BuildContext context) async {
-    final _userModel = Provider.of<UserViewModel>(context);
-    MyUser _user = await _userModel.signInWithGoogle();
-
+  void _googleIleGiris(UserViewModel userModel) async {
+    MyUser _user = await userModel.signInWithGoogle();
     print("Oturum açan user ıd: " + _user.userID.toString());
   }
 
-  _emailveSifreGiris(BuildContext context) {
+  void _emailveSifreGiris(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
         fullscreenDialog: true,
@@ -31,6 +27,7 @@ class SignInPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _userModel = Provider.of<UserViewModel>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text("Flutter Lovers"),
@@ -57,7 +54,7 @@ class SignInPage extends StatelessWidget {
               buttonText: "Gmail ile Giriş Yap",
               textColor: Colors.black87,
               buttonIcon: Image.asset("assets/images/google-logo.png"),
-              onPressed: () => _googleIleGiris(context),
+              onPressed: () => _googleIleGiris(_userModel),
             ),
             SocialLoginButton(
               buttonColor: Color(0xFF334D92),
@@ -80,7 +77,7 @@ class SignInPage extends StatelessWidget {
               buttonIcon: Icon(Icons.supervised_user_circle),
               buttonText: "Misafir girişi",
               buttonColor: Colors.teal,
-              onPressed: () => _misafirGirisi(context),
+              onPressed: () => _misafirGirisi(_userModel),
             ),
           ],
         ),

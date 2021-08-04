@@ -10,8 +10,6 @@ class FirestoreDBService implements DBBase {
     DocumentSnapshot _okunanUser =
         await FirebaseFirestore.instance.doc("users/${user.userID}").get();
 
-
-
     return true;
   }
 }

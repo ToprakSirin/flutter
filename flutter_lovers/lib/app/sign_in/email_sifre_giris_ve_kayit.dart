@@ -20,7 +20,7 @@ class _EmailveSifreLoginPageState extends State<EmailveSifreLoginPage> {
   FormType _formType = FormType.Login;
   final _formKey = GlobalKey<FormState>();
 
-  _formSubmit(UserViewModel userModel) async {
+  void _formSubmit(UserViewModel userModel) async {
     _formKey.currentState!.save();
 
     if (_formType == FormType.Login) {
@@ -48,15 +48,18 @@ class _EmailveSifreLoginPageState extends State<EmailveSifreLoginPage> {
   @override
   Widget build(BuildContext context) {
     final _userModel = Provider.of<UserViewModel>(context);
-    _butonText = _formType == FormType.Register ? "Giriş Yap" : "Kayıt Ol";
+    _butonText = _formType == FormType.Login ? "Giriş Yap" : "Kayıt Ol";
     _linkText = _formType == FormType.Login
         ? "Hesabınız Yok mu? Kayıt Olun"
         : "Hesabınız var mı? Giriş Yapın";
 
     if (_userModel.user != null) {
-      Future.delayed(Duration(milliseconds: 200), () {
-        Navigator.of(context).pop();
-      });
+      Future.delayed(
+        Duration(milliseconds: 200),
+        () {
+          return Navigator.of(context).pop();
+        },
+      );
     }
 
     return Scaffold(
@@ -103,7 +106,7 @@ class _EmailveSifreLoginPageState extends State<EmailveSifreLoginPage> {
                           border: OutlineInputBorder(),
                         ),
                         onSaved: (girilenSifre) {
-                          _email = girilenSifre;
+                          _sifre = girilenSifre;
                         },
                       ),
                       SizedBox(
@@ -114,7 +117,7 @@ class _EmailveSifreLoginPageState extends State<EmailveSifreLoginPage> {
                         buttonText: _butonText!,
                         buttonColor: Theme.of(context).primaryColor,
                         radius: 20,
-                        onPressed: _formSubmit(_userModel),
+                        onPressed: () => _formSubmit(_userModel),
                       ),
                       SizedBox(
                         height: 10,
@@ -123,7 +126,7 @@ class _EmailveSifreLoginPageState extends State<EmailveSifreLoginPage> {
                         onPressed: () => _degistir(),
                         child: Text(
                           _linkText!,
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(color: Colors.black),
                         ),
                       ),
                     ],
