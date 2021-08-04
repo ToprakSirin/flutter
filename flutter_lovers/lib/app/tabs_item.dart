@@ -9,7 +9,7 @@ class TabItemData {
 
   static Map<TabItem, TabItemData> tumTablar = {
     TabItem.Kullanicilar:
-        TabItemData(icon: Icons.supervised_user_circle, labelText: "users"),
+        TabItemData(icon: Icons.supervised_user_circle, labelText: "Kullanıcılar"),
    
     TabItem.Profil: TabItemData(icon: Icons.person, labelText: "profil"),
   };

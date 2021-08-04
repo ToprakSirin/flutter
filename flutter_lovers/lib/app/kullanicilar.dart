@@ -8,9 +8,6 @@ class KullanicilarPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Kullanıcılar"),
-        actions: [IconButton(onPressed: (){
-          
-        }, icon: Icon(Icons.title))],
       ),
       body: Center(
         child: Text("Kullanıcılar Sayfası"),
