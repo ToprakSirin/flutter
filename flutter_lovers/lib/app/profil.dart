@@ -8,6 +8,14 @@ class ProfilPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Profil"),
+        actions: [
+          TextButton(
+              onPressed: () {},
+              child: Text(
+                "Çıkış",
+                style: TextStyle(color: Colors.white, fontSize: 18),
+              ))
+        ],
       ),
       body: Center(
         child: Text("Profil Sayfası"),
