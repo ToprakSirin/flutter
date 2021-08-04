@@ -10,20 +10,19 @@ class UserViewModel with ChangeNotifier implements AuthBase {
   ViewState _state = ViewState.Idle;
   UserRepository _userRepository = locator<UserRepository>();
   MyUser? _user;
-  String? emailHataMesaji;
-  String? sifreHataMesaji;
+
+  String? emailErrorMessage;
+  String? passwordErrorMessage;
 
   MyUser? get user => _user;
 
   ViewState get state => _state;
-
+  UserViewModel() {
+    currentUser();
+  }
   set state(ViewState value) {
     _state = value;
     notifyListeners();
-  }
-
-  UserViewModel() {
-    currentUser();
   }
 
   @override
@@ -31,10 +30,13 @@ class UserViewModel with ChangeNotifier implements AuthBase {
     try {
       state = ViewState.Busy;
       _user = await _userRepository.currentUser();
-      return user!;
+      if (_user != null)
+        return _user!;
+      else
+        throw Exception();
     } catch (e) {
-      print("Hata usermodel currentstate çıktı");
-      throw Exception(e);
+      debugPrint("Viewmodeldeki current user hata:" + e.toString());
+      return null!;
     } finally {
       state = ViewState.Idle;
     }
@@ -47,8 +49,8 @@ class UserViewModel with ChangeNotifier implements AuthBase {
       _user = await _userRepository.signInAnonymously();
       return user!;
     } catch (e) {
-      print("Hata usermodel signInAnonymously çıktı ");
-      throw Exception(e);
+      debugPrint("Viewmodeldeki current user hata:" + e.toString());
+      throw Exception();
     } finally {
       state = ViewState.Idle;
     }
@@ -58,9 +60,9 @@ class UserViewModel with ChangeNotifier implements AuthBase {
   Future<bool> signOut() async {
     try {
       state = ViewState.Busy;
-      await _userRepository.signOut();
+      bool sonuc = await _userRepository.signOut();
       _user = null;
-      return true;
+      return sonuc;
     } catch (e) {
       print("Hata usermodel sign out çıktı");
       return false;
@@ -76,7 +78,7 @@ class UserViewModel with ChangeNotifier implements AuthBase {
       _user = await _userRepository.signInWithGoogle();
       return user!;
     } catch (e) {
-      print("Hata usermodel signInWithGoogle çıktı ");
+      print("Hata userViewmodel signin google");
       throw Exception(e);
     } finally {
       state = ViewState.Idle;
@@ -86,21 +88,18 @@ class UserViewModel with ChangeNotifier implements AuthBase {
   @override
   Future<MyUser> createUserWithEmailandPassword(
       String email, String sifre) async {
-    try {
-      if (_emailSifreKontrol(email, sifre)) {
+    if (_emailSifreKontrol(email, sifre)) {
+      try {
         state = ViewState.Busy;
         _user =
             await _userRepository.createUserWithEmailandPassword(email, sifre);
-        return user!;
-      } else {
-        return null!;
+
+        return _user!;
+      } finally {
+        state = ViewState.Idle;
       }
-    } catch (e) {
-      print("Hata usermodel createUserWithEmailandPassword çıktı ");
-      throw Exception(e);
-    } finally {
-      state = ViewState.Idle;
-    }
+    } else
+      return null!;
   }
 
   @override
@@ -109,13 +108,9 @@ class UserViewModel with ChangeNotifier implements AuthBase {
       if (_emailSifreKontrol(email, sifre)) {
         state = ViewState.Busy;
         _user = await _userRepository.signInWithEmailandPassword(email, sifre);
-        return user!;
-      } else {
-        return null!;
-      }
-    } catch (e) {
-      print("Hata usermodel signInWithEmailandPassword çıktı ");
-      throw Exception(e);
+        return _user!;
+      } else
+        throw Exception();
     } finally {
       state = ViewState.Idle;
     }
@@ -124,14 +119,15 @@ class UserViewModel with ChangeNotifier implements AuthBase {
   bool _emailSifreKontrol(String email, String sifre) {
     var sonuc = true;
     if (sifre.length < 6) {
-      sifreHataMesaji = "En az 6 karakter olmalı";
+      passwordErrorMessage = "En az 6 karakter olmalı";
       sonuc = false;
     } else
-      sifreHataMesaji = null;
+      passwordErrorMessage = null;
     if (!email.contains('@')) {
-      emailHataMesaji = "Geçersiz mail adresi";
+      emailErrorMessage = "Geçersiz mail adresi";
       sonuc = false;
-    }
+    } else
+      emailErrorMessage = null;
     return sonuc;
   }
 }

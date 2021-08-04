@@ -8,32 +8,31 @@ import 'package:provider/provider.dart';
 enum FormType { Register, Login }
 
 class EmailveSifreLoginPage extends StatefulWidget {
-  EmailveSifreLoginPage({Key? key}) : super(key: key);
-
   @override
   _EmailveSifreLoginPageState createState() => _EmailveSifreLoginPageState();
 }
 
 class _EmailveSifreLoginPageState extends State<EmailveSifreLoginPage> {
-  String? _email, _sifre;
-  String? _butonText, _linkText;
-  var _formType = FormType.Login;
+  String? _email;
+  String? _sifre;
+  String? _butonText;
+  String? _linkText;
+  FormType _formType = FormType.Login;
   final _formKey = GlobalKey<FormState>();
 
-  _formSubmit(BuildContext context) async {
+  _formSubmit(UserViewModel userModel) async {
     _formKey.currentState!.save();
-    final _userModel = Provider.of<UserViewModel>(context);
 
     if (_formType == FormType.Login) {
       MyUser _girisYapanUser =
-          await _userModel.signInWithEmailandPassword(_email!, _sifre!);
+          await userModel.signInWithEmailandPassword(_email!, _sifre!);
       if (_girisYapanUser != null)
         print("Oturum açan user id:" + _girisYapanUser.userID.toString());
     } else {
       MyUser _olusturulanUser =
-          await _userModel.createUserWithEmailandPassword(_email!, _sifre!);
+          await userModel.createUserWithEmailandPassword(_email!, _sifre!);
       if (_olusturulanUser != null)
-        print("Oturum açan user id:" + _olusturulanUser.userID.toString());
+        print("Oluşturulan:" + _olusturulanUser.userID.toString());
     }
   }
 
@@ -48,12 +47,11 @@ class _EmailveSifreLoginPageState extends State<EmailveSifreLoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final _userModel = Provider.of<UserViewModel>(context);
     _butonText = _formType == FormType.Register ? "Giriş Yap" : "Kayıt Ol";
     _linkText = _formType == FormType.Login
         ? "Hesabınız Yok mu? Kayıt Olun"
         : "Hesabınız var mı? Giriş Yapın";
-
-    final _userModel = Provider.of<UserViewModel>(context);
 
     if (_userModel.user != null) {
       Future.delayed(Duration(milliseconds: 200), () {
@@ -77,8 +75,8 @@ class _EmailveSifreLoginPageState extends State<EmailveSifreLoginPage> {
                         initialValue: "emre@emre.com",
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
-                          errorText: _userModel.emailHataMesaji != null
-                              ? _userModel.emailHataMesaji
+                          errorText: _userModel.emailErrorMessage != null
+                              ? _userModel.emailErrorMessage
                               : null,
                           prefixIcon: Icon(Icons.mail),
                           hintText: 'Email',
@@ -86,7 +84,7 @@ class _EmailveSifreLoginPageState extends State<EmailveSifreLoginPage> {
                           border: OutlineInputBorder(),
                         ),
                         onSaved: (girilenEmail) {
-                          _email != girilenEmail;
+                          _email = girilenEmail;
                         },
                       ),
                       SizedBox(
@@ -96,8 +94,8 @@ class _EmailveSifreLoginPageState extends State<EmailveSifreLoginPage> {
                         initialValue: "password",
                         obscureText: true,
                         decoration: InputDecoration(
-                          errorText: _userModel.sifreHataMesaji != null
-                              ? _userModel.sifreHataMesaji
+                          errorText: _userModel.passwordErrorMessage != null
+                              ? _userModel.passwordErrorMessage
                               : null,
                           prefixIcon: Icon(Icons.mail),
                           hintText: 'Şifre',
@@ -105,7 +103,7 @@ class _EmailveSifreLoginPageState extends State<EmailveSifreLoginPage> {
                           border: OutlineInputBorder(),
                         ),
                         onSaved: (girilenSifre) {
-                          _email != girilenSifre;
+                          _email = girilenSifre;
                         },
                       ),
                       SizedBox(
@@ -116,7 +114,7 @@ class _EmailveSifreLoginPageState extends State<EmailveSifreLoginPage> {
                         buttonText: _butonText!,
                         buttonColor: Theme.of(context).primaryColor,
                         radius: 20,
-                        onPressed: _formSubmit(context),
+                        onPressed: _formSubmit(_userModel),
                       ),
                       SizedBox(
                         height: 10,

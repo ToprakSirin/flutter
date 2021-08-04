@@ -5,6 +5,7 @@ import 'package:flutter_lovers/services/auth_base.dart';
 
 class FirebaseAuthService implements AuthBase {
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
   @override
   Future<MyUser> currentUser() async {
     try {
@@ -12,12 +13,16 @@ class FirebaseAuthService implements AuthBase {
       return _useFromFirebase(_user);
     } catch (e) {
       print("Hata Current User: " + e.toString());
-      throw Exception(e);
+      return null!;
     }
   }
 
   MyUser _useFromFirebase(User user) {
-    return MyUser(user.uid);
+    if (user == null) {
+      return null!;
+    } else {
+      return MyUser(userID: user.uid, email: user.email);
+    }
   }
 
   @override
@@ -26,8 +31,8 @@ class FirebaseAuthService implements AuthBase {
       UserCredential sonuc = await _firebaseAuth.signInAnonymously();
       return _useFromFirebase(sonuc.user!);
     } catch (e) {
-      print("Hata anonmyously: $e");
-      throw Exception(e);
+      print("anonim giris hata:" + e.toString());
+      throw Exception();
     }
   }
 
@@ -35,9 +40,7 @@ class FirebaseAuthService implements AuthBase {
   Future<bool> signOut() async {
     try {
       final _googleSignIn = GoogleSignIn();
-      if (_googleSignIn.currentUser != null) {
-        await _googleSignIn.signOut();
-      }
+      _googleSignIn.signOut();
 
       await _firebaseAuth.signOut();
       return true;
@@ -49,13 +52,13 @@ class FirebaseAuthService implements AuthBase {
 
   @override
   Future<MyUser> signInWithGoogle() async {
-    GoogleSignIn _googleSignIn = GoogleSignIn();
-    GoogleSignInAccount? _googleUser = await _googleSignIn.signIn();
+    GoogleSignIn _googleSignin = GoogleSignIn();
+    GoogleSignInAccount? _googleUser = await _googleSignin.signIn();
     UserCredential? sonuc;
     if (_googleUser != null) {
       GoogleSignInAuthentication _googleAuth = await _googleUser.authentication;
       if (_googleAuth.idToken != null && _googleAuth.accessToken != null) {
-        sonuc = await _firebaseAuth.signInWithCredential(
+        UserCredential sonuc = await _firebaseAuth.signInWithCredential(
           GoogleAuthProvider.credential(
             idToken: _googleAuth.idToken,
             accessToken: _googleAuth.accessToken,
@@ -74,25 +77,15 @@ class FirebaseAuthService implements AuthBase {
   @override
   Future<MyUser> createUserWithEmailandPassword(
       String email, String sifre) async {
-    try {
-      UserCredential sonuc = await _firebaseAuth.createUserWithEmailAndPassword(
-          email: email, password: sifre);
-      return _useFromFirebase(sonuc.user!);
-    } catch (e) {
-      print("Hata anonmyously: $e");
-      throw Exception(e);
-    }
+    UserCredential sonuc = await _firebaseAuth.createUserWithEmailAndPassword(
+        email: email, password: sifre);
+    return _useFromFirebase(sonuc.user!);
   }
 
   @override
   Future<MyUser> signInWithEmailandPassword(String email, String sifre) async {
-    try {
-      UserCredential sonuc = await _firebaseAuth.signInWithEmailAndPassword(
-          email: email, password: sifre);
-      return _useFromFirebase(sonuc.user!);
-    } catch (e) {
-      print("Hata anonmyously: $e");
-      throw Exception(e);
-    }
+    UserCredential sonuc = await _firebaseAuth.signInWithEmailAndPassword(
+        email: email, password: sifre);
+    return _useFromFirebase(sonuc.user!);
   }
 }

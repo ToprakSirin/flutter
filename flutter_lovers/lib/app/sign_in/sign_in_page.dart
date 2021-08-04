@@ -20,7 +20,7 @@ class SignInPage extends StatelessWidget {
     print("Oturum açan user ıd: " + _user.userID.toString());
   }
 
-  void _emailveSifreGiris(BuildContext context) {
+  _emailveSifreGiris(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
         fullscreenDialog: true,
@@ -77,9 +77,9 @@ class SignInPage extends StatelessWidget {
               onPressed: () => _emailveSifreGiris(context),
             ),
             SocialLoginButton(
-              buttonIcon: Icon(Icons.add),
+              buttonIcon: Icon(Icons.supervised_user_circle),
               buttonText: "Misafir girişi",
-              buttonColor: Colors.orange,
+              buttonColor: Colors.teal,
               onPressed: () => _misafirGirisi(context),
             ),
           ],
