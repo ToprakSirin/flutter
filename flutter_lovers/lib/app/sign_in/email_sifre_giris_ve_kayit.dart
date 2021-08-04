@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_lovers/app/hata_exception.dart';
+import 'package:flutter_lovers/common_widget/platform_duyarli_alert_dialog.dart';
 
 import 'package:flutter_lovers/common_widget/social_log_in_button.dart';
 
@@ -34,24 +35,11 @@ class _EmailveSifreLoginPageState extends State<EmailveSifreLoginPage> {
       try {
         await _userModel.createUserWithEmailAndPassword(_email!, _password!);
       } on PlatformException catch (e) {
-        debugPrint("Widget kullanıcı oluşturma hata yakalandı :" +
-            Hatalar.goster(e.code));
-        showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: Text("Kullanıcı oluşturma hata"),
-                content: Text(Hatalar.goster(e.code)),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text("Tamam"),
-                  )
-                ],
-              );
-            });
+        PlatformDuyarliAlertDialog(
+          baslik: "Kullanıcı oluşturma hata",
+          icerik: Hatalar.goster(e.code),
+          anaButonYazisi: "Tamam",
+        ).goster(context);
       }
     }
   }
