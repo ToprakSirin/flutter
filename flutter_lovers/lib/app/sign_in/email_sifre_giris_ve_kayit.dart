@@ -20,19 +20,19 @@ class _EmailveSifreLoginPageState extends State<EmailveSifreLoginPage> {
   FormType _formType = FormType.Login;
   final _formKey = GlobalKey<FormState>();
 
-  void _formSubmit(UserViewModel userModel) async {
+  void _formSubmit(UserViewModel _userModel) async {
     _formKey.currentState!.save();
-
+    print("Email: $_email Sifre: $_sifre");
     if (_formType == FormType.Login) {
       MyUser _girisYapanUser =
-          await userModel.signInWithEmailandPassword(_email!, _sifre!);
-      if (_girisYapanUser != null)
-        print("Oturum açan user id:" + _girisYapanUser.userID.toString());
+          await _userModel.signInWithEmailandPassword(_email!, _sifre!);
+      //  if (_girisYapanUser != null)
+      //  print("Oturum açan user id:" + _girisYapanUser.userID.toString());
     } else {
       MyUser _olusturulanUser =
-          await userModel.createUserWithEmailandPassword(_email!, _sifre!);
-      if (_olusturulanUser != null)
-        print("Oluşturulan:" + _olusturulanUser.userID.toString());
+          await _userModel.createUserWithEmailandPassword(_email!, _sifre!);
+      //   if (_olusturulanUser != null)
+      //print("Oluşturulan:" + _olusturulanUser.userID.toString());
     }
   }
 

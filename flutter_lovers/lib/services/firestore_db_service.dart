@@ -7,7 +7,6 @@ class FirestoreDBService implements DBBase {
   @override
   Future<bool> saveUser(MyUser user) async {
     await _firebaseDB.collection("users").doc(user.userID).set(user.toMap());
-
     DocumentSnapshot _okunanUser =
         await FirebaseFirestore.instance.doc("users/${user.userID}").get();
 
@@ -18,12 +17,11 @@ class FirestoreDBService implements DBBase {
   Future<MyUser> readUser(String userID) async {
     DocumentSnapshot _okunanUser =
         await _firebaseDB.collection("users").doc(userID).get();
-
     Map<String, dynamic> _okunanUserBilgileriMap =
-        _okunanUser.data as Map<String, dynamic>;
+        (_okunanUser.data() as Map<String, dynamic>);
 
     MyUser _okunanUserNesnesi = MyUser.fromMap(_okunanUserBilgileriMap);
-    print("Okunan user nesnesi :" + _okunanUserNesnesi.toString());
+    print("Okunan  User nesnesi: " + _okunanUserNesnesi.toString());
     return _okunanUserNesnesi;
   }
 }
