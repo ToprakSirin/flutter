@@ -3,11 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_lovers/app/hata_exception.dart';
 
 import 'package:flutter_lovers/common_widget/social_log_in_button.dart';
-import 'package:flutter_lovers/model/user.dart';
+
 import 'package:flutter_lovers/viewmodel/user_view_model.dart';
 import 'package:provider/provider.dart';
 
-enum FormType { Register, Login }
+enum FormType { REGISTER, LOGIN }
 
 class EmailveSifreLoginPage extends StatefulWidget {
   @override
@@ -16,46 +16,39 @@ class EmailveSifreLoginPage extends StatefulWidget {
 
 class _EmailveSifreLoginPageState extends State<EmailveSifreLoginPage> {
   String? _email;
-  String? _sifre;
+  String? _password;
+  final _formKey = GlobalKey<FormState>();
   String? _butonText;
   String? _linkText;
-  FormType _formType = FormType.Login;
-  final _formKey = GlobalKey<FormState>();
+  FormType _formType = FormType.LOGIN;
 
   void _formSubmit(UserViewModel _userModel) async {
     _formKey.currentState!.save();
-    print("Email: $_email Sifre: $_sifre");
-    if (_formType == FormType.Login) {
+    print("Email: $_email Sifre: $_password");
+
+    if (_formType == FormType.LOGIN) {
       try {
-        MyUser _girisYapanUser =
-            await _userModel.signInWithEmailandPassword(_email!, _sifre!);
-        if (_girisYapanUser != null)
-          print("Oturum açan user id:" + _girisYapanUser.userID.toString());
-      } on PlatformException catch (e) {
-        debugPrint("Widget oturum hata yakalandı" + e.code.toString());
-      }
+        await _userModel.signInWithEmailAndPassword(_email!, _password!);
+      } catch (e) {}
     } else {
       try {
-        MyUser _olusturulanUser =
-            await _userModel.createUserWithEmailandPassword(_email!, _sifre!);
-        if (_olusturulanUser != null)
-          print("Oturum açan user id: :" + _olusturulanUser.userID.toString());
+        await _userModel.createUserWithEmailAndPassword(_email!, _password!);
       } on PlatformException catch (e) {
-        debugPrint("Widget kullanıcı oluşturma hata yakalandı" +
+        debugPrint("Widget kullanıcı oluşturma hata yakalandı :" +
             Hatalar.goster(e.code));
-
         showDialog(
             context: context,
             builder: (context) {
               return AlertDialog(
-                title: Text("Kullanıcı Oluşturma Hata"),
+                title: Text("Kullanıcı oluşturma hata"),
                 content: Text(Hatalar.goster(e.code)),
                 actions: [
                   TextButton(
-                      child: Text("Tamam"),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      })
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text("Tamam"),
+                  )
                 ],
               );
             });
@@ -64,97 +57,78 @@ class _EmailveSifreLoginPageState extends State<EmailveSifreLoginPage> {
   }
 
   void _degistir() {
-    setState(
-      () {
-        _formType =
-            _formType == FormType.Login ? FormType.Register : FormType.Login;
-      },
-    );
+    setState(() {
+      _formType == FormType.REGISTER
+          ? _formType = FormType.LOGIN
+          : _formType = FormType.REGISTER;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final _userModel = Provider.of<UserViewModel>(context);
-    _butonText = _formType == FormType.Login ? "Giriş Yap" : "Kayıt Ol";
-    _linkText = _formType == FormType.Login
-        ? "Hesabınız Yok mu? Kayıt Olun"
-        : "Hesabınız var mı? Giriş Yapın";
-
+    _butonText = _formType == FormType.LOGIN ? "Giriş Yap" : "Kayıt Ol";
+    _linkText = _formType == FormType.LOGIN
+        ? "Hesabınız yok mu? Kayıt Ol"
+        : "Hesabınız var mı? Giriş Yap ";
     if (_userModel.user != null) {
       Future.delayed(
         Duration(milliseconds: 200),
-        () {
-          return Navigator.of(context).pop();
-        },
+        () => Navigator.of(context).pop(),
       );
     }
-
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Giriş/Kayit"),
-      ),
+      resizeToAvoidBottomInset: true,
+      appBar: AppBar(title: Text("Giriş ve Kayıt ol")),
       body: _userModel.state == ViewState.Idle
           ? SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Form(
-                  key: _formKey,
+              child: Form(
+                key: _formKey,
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
                   child: Column(
                     children: [
                       TextFormField(
-                        initialValue: "emre@emre.com",
+                        initialValue: "emre@gmail.com",
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
                           errorText: _userModel.emailErrorMessage != null
                               ? _userModel.emailErrorMessage
                               : null,
-                          prefixIcon: Icon(Icons.mail),
-                          hintText: 'Email',
-                          labelText: 'Email',
+                          prefixIcon: Icon(Icons.email),
+                          labelText: "Email",
                           border: OutlineInputBorder(),
                         ),
                         onSaved: (girilenEmail) {
                           _email = girilenEmail;
                         },
                       ),
-                      SizedBox(
-                        height: 8,
-                      ),
+                      SizedBox(height: 20),
                       TextFormField(
                         initialValue: "password",
                         obscureText: true,
+                        keyboardType: TextInputType.visiblePassword,
                         decoration: InputDecoration(
                           errorText: _userModel.passwordErrorMessage != null
                               ? _userModel.passwordErrorMessage
                               : null,
-                          prefixIcon: Icon(Icons.mail),
-                          hintText: 'Şifre',
-                          labelText: 'Şifre',
+                          prefixIcon: Icon(Icons.lock),
+                          labelText: "Password",
                           border: OutlineInputBorder(),
                         ),
-                        onSaved: (girilenSifre) {
-                          _sifre = girilenSifre;
+                        onSaved: (girirlenSifre) {
+                          _password = girirlenSifre;
                         },
                       ),
-                      SizedBox(
-                        height: 8,
-                      ),
+                      SizedBox(height: 20),
                       SocialLoginButton(
-                        buttonIcon: Icon(Icons.format_align_center),
                         buttonText: _butonText!,
-                        buttonColor: Theme.of(context).primaryColor,
-                        radius: 20,
                         onPressed: () => _formSubmit(_userModel),
                       ),
-                      SizedBox(
-                        height: 10,
-                      ),
+                      SizedBox(height: 20),
                       TextButton(
                         onPressed: () => _degistir(),
-                        child: Text(
-                          _linkText!,
-                          style: TextStyle(color: Colors.black),
-                        ),
+                        child: Text(_linkText!),
                       ),
                     ],
                   ),

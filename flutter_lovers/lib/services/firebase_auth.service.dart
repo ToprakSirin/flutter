@@ -13,16 +13,12 @@ class FirebaseAuthService implements AuthBase {
       return _useFromFirebase(_user);
     } catch (e) {
       print("Hata Current User: " + e.toString());
-      return null!;
+      throw Exception(e);
     }
   }
 
   MyUser _useFromFirebase(User user) {
-    if (user == null) {
-      return null!;
-    } else {
-      return MyUser(userID: user.uid, email: user.email);
-    }
+    return MyUser(userID: user.uid, email: user.email.toString());
   }
 
   @override
@@ -58,7 +54,7 @@ class FirebaseAuthService implements AuthBase {
     if (_googleUser != null) {
       GoogleSignInAuthentication _googleAuth = await _googleUser.authentication;
       if (_googleAuth.idToken != null && _googleAuth.accessToken != null) {
-        UserCredential sonuc = await _firebaseAuth.signInWithCredential(
+        sonuc = await _firebaseAuth.signInWithCredential(
           GoogleAuthProvider.credential(
             idToken: _googleAuth.idToken,
             accessToken: _googleAuth.accessToken,
@@ -75,17 +71,19 @@ class FirebaseAuthService implements AuthBase {
   }
 
   @override
-  Future<MyUser> createUserWithEmailandPassword(
-      String email, String sifre) async {
+  Future<MyUser> createUserWithEmailAndPassword(
+      String email, String password) async {
     UserCredential sonuc = await _firebaseAuth.createUserWithEmailAndPassword(
-        email: email, password: sifre);
+        email: email, password: password);
+
     return _useFromFirebase(sonuc.user!);
   }
 
   @override
-  Future<MyUser> signInWithEmailandPassword(String email, String sifre) async {
+  Future<MyUser> signInWithEmailAndPassword(
+      String email, String password) async {
     UserCredential sonuc = await _firebaseAuth.signInWithEmailAndPassword(
-        email: email, password: sifre);
+        email: email, password: password);
     return _useFromFirebase(sonuc.user!);
   }
 }

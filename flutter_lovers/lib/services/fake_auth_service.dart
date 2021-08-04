@@ -2,18 +2,21 @@ import 'package:flutter_lovers/model/user.dart';
 import 'package:flutter_lovers/services/auth_base.dart';
 
 class FakeAuthService implements AuthBase {
-  String userID = "123456";
+  String userId = "123456";
+  String email = "123@gmail.com";
   @override
   Future<MyUser> currentUser() async {
     return await Future.value(
-      MyUser(userID: userID, email: "fakeuser@fake.com"),
+      MyUser(userID: userId, email: email),
     );
   }
 
   @override
   Future<MyUser> signInAnonymously() async {
-    return await Future.delayed(Duration(seconds: 2),
-        () => MyUser(userID: userID, email: "fakeuser@fake.com"));
+    return await Future.delayed(
+      Duration(seconds: 1),
+      () => MyUser(userID: userId, email: email),
+    );
   }
 
   @override
@@ -24,27 +27,26 @@ class FakeAuthService implements AuthBase {
   @override
   Future<MyUser> signInWithGoogle() async {
     return await Future.delayed(
-        Duration(seconds: 2),
-        () => MyUser(
-            userID: "google_user_id.123456", email: "fakeuser@fake.com"));
+      Duration(seconds: 1),
+      () => MyUser(userID: "googleuserid", email: "google@gmail.com"),
+    );
   }
 
   @override
-  Future<MyUser> createUserWithEmailandPassword(
+  Future<MyUser> createUserWithEmailAndPassword(
       String email, String password) async {
     return await Future.delayed(
-        Duration(seconds: 2),
+        Duration(seconds: 1),
         () => MyUser(
-            userID: "created_user_id_123456", email: "fakeuser@fake.com"));
+            userID: "createEmialAndPasswordid", email: "create@gmail.com"));
   }
 
   @override
-  Future<MyUser> signInWithEmailandPassword(
+  Future<MyUser> signInWithEmailAndPassword(
       String email, String password) async {
     return await Future.delayed(
-        Duration(seconds: 2),
+        Duration(seconds: 1),
         () => MyUser(
-            userID: "sign_in_email_password_user_id_123456",
-            email: "fakeuser@fake.com"));
+            userID: "signinEmialAndPasswordid", email: "email@gmail.com"));
   }
 }

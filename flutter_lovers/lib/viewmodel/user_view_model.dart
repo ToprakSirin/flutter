@@ -8,19 +8,20 @@ enum ViewState { Idle, Busy }
 
 class UserViewModel with ChangeNotifier implements UserRepository {
   ViewState _state = ViewState.Idle;
-  UserRepository _userRepository = locator<UserRepository>();
+  UserRepository _userRepostory = locator<UserRepository>();
   MyUser? _user;
 
+  //validate form login
   String? emailErrorMessage;
   String? passwordErrorMessage;
 
   MyUser? get user => _user;
 
   ViewState get state => _state;
-
   UserViewModel() {
     currentUser();
   }
+
   set state(ViewState value) {
     _state = value;
     notifyListeners();
@@ -30,10 +31,10 @@ class UserViewModel with ChangeNotifier implements UserRepository {
   Future<MyUser> currentUser() async {
     try {
       state = ViewState.Busy;
-      _user = await _userRepository.currentUser();
+      _user = await _userRepostory.currentUser();
       return user!;
     } catch (e) {
-      debugPrint("Viewmodeldeki current user hata:" + e.toString());
+      print("Hata userViewmodel currentstate");
       throw Exception(e);
     } finally {
       state = ViewState.Idle;
@@ -44,10 +45,10 @@ class UserViewModel with ChangeNotifier implements UserRepository {
   Future<MyUser> signInAnonymously() async {
     try {
       state = ViewState.Busy;
-      _user = await _userRepository.signInAnonymously();
+      _user = await _userRepostory.signInAnonymously();
       return user!;
     } catch (e) {
-      debugPrint("Viewmodeldeki current user hata:" + e.toString());
+      print("Hata userViewmodel signin anon");
       throw Exception(e);
     } finally {
       state = ViewState.Idle;
@@ -58,11 +59,13 @@ class UserViewModel with ChangeNotifier implements UserRepository {
   Future<bool> signOut() async {
     try {
       state = ViewState.Busy;
-      bool sonuc = await _userRepository.signOut();
+
+      await _userRepostory.signOut();
       _user = null;
-      return sonuc;
+
+      return true;
     } catch (e) {
-      print("Hata usermodel sign out çıktı");
+      print("Hata userViewmodel sign out");
       return false;
     } finally {
       state = ViewState.Idle;
@@ -73,11 +76,8 @@ class UserViewModel with ChangeNotifier implements UserRepository {
   Future<MyUser> signInWithGoogle() async {
     try {
       state = ViewState.Busy;
-      _user = await _userRepository.signInWithGoogle();
-      if (_user != null)
-        return _user!;
-      else
-        throw Exception();
+      _user = await _userRepostory.signInWithGoogle();
+      return user!;
     } catch (e) {
       print("Hata userViewmodel signin google");
       throw Exception(e);
@@ -87,48 +87,49 @@ class UserViewModel with ChangeNotifier implements UserRepository {
   }
 
   @override
-  Future<MyUser> createUserWithEmailandPassword(
-      String email, String sifre) async {
-    if (_emailSifreKontrol(email, sifre)) {
+  Future<MyUser?> createUserWithEmailAndPassword(
+      String email, String password) async {
+    if (_emailAndPasswordValidate(email, password)) {
       try {
         state = ViewState.Busy;
         _user =
-            await _userRepository.createUserWithEmailandPassword(email, sifre);
-
-        return _user!;
+            await _userRepostory.createUserWithEmailAndPassword(email, password);
+        return user!;
       } finally {
         state = ViewState.Idle;
       }
-    } else
-      throw Exception();
+    }
   }
 
   @override
-  Future<MyUser> signInWithEmailandPassword(String email, String sifre) async {
+  Future<MyUser?> signInWithEmailAndPassword(
+      String email, String password) async {
     try {
-      if (_emailSifreKontrol(email, sifre)) {
+      if (_emailAndPasswordValidate(email, password)) {
         state = ViewState.Busy;
-        _user = await _userRepository.signInWithEmailandPassword(email, sifre);
-        return _user!;
-      } else
-        throw Exception();
+        _user = await _userRepostory.signInWithEmailAndPassword(email, password);
+        return user!;
+      }
     } finally {
       state = ViewState.Idle;
     }
   }
 
-  bool _emailSifreKontrol(String email, String sifre) {
+  bool _emailAndPasswordValidate(String email, String password) {
     bool sonuc = true;
-    if (sifre.length < 6) {
-      passwordErrorMessage = "En az 6 karakter olmalı";
+
+    if (password.length < 6) {
+      passwordErrorMessage = "Sifre en az 6 karakter olmalıdır";
       sonuc = false;
-    } else
+    } else {
       passwordErrorMessage = null;
-    if (!email.contains('@')) {
-      emailErrorMessage = "Geçersiz mail adresi";
+    }
+    if (!email.contains("@")) {
+      emailErrorMessage = "hatali email";
       sonuc = false;
-    } else
+    } else {
       emailErrorMessage = null;
+    }
     return sonuc;
   }
 }
