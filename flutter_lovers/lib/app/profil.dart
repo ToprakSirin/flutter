@@ -116,6 +116,7 @@ class _ProfilPageState extends State<ProfilPage> {
                     buttonText: "Değişiklikleri Kaydet",
                     onPressed: () {
                       _userNameGuncelle(context, _userModel);
+                      _profilFotoGuncelle(context, _userModel);
                     }),
               )
             ],
@@ -163,30 +164,33 @@ class _ProfilPageState extends State<ProfilPage> {
                 anaButonYazisi: "Tamam")
             .goster(context);
       }
-    } else {
-      PlatformDuyarliAlertDialog(
-              baslik: "Hata",
-              icerik: "UserName değişiklik yapmadınız",
-              anaButonYazisi: "Tamam")
-          .goster(context);
     }
   }
 
   void _kameradanFotoCek() async {
-     ImagePicker _picker = ImagePicker();
+    ImagePicker _picker = ImagePicker();
     XFile? _yeniResim = await _picker.pickImage(source: ImageSource.camera);
-      Navigator.of(context).pop();
     setState(() {
       _profilPhoto = _yeniResim;
+      Navigator.of(context).pop();
     });
   }
 
   void _galeridenFotoSec() async {
-       ImagePicker _picker = ImagePicker();
+    ImagePicker _picker = ImagePicker();
     XFile? _yeniResim = await _picker.pickImage(source: ImageSource.gallery);
-      Navigator.of(context).pop();
+
     setState(() {
       _profilPhoto = _yeniResim;
+      Navigator.of(context).pop();
     });
+  }
+
+  void _profilFotoGuncelle(BuildContext context, UserViewModel userModel)async{
+    if(_profilPhoto!=null){
+  String url = await userModel.uploadFile(
+          userModel.user!.userID, "profil_photo", _profilPhoto!);
+      print("gelen url: $url");
+    }
   }
 }
