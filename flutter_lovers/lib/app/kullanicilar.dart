@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_lovers/app/konusma.dart';
 import 'package:flutter_lovers/model/user.dart';
 import 'package:flutter_lovers/viewmodel/user_view_model.dart';
 import 'package:provider/provider.dart';
@@ -26,12 +27,24 @@ class KullanicilarPage extends StatelessWidget {
                     itemBuilder: (context, index) {
                       var oankiUser = sonuc.data![index];
                       if (oankiUser.userID != _userModel.user!.userID) {
-                        return ListTile(
-                          title: Text(oankiUser.userName.toString()),
-                          subtitle: Text(oankiUser.email.toString()),
-                          leading: CircleAvatar(
-                            backgroundImage:
-                                NetworkImage(oankiUser.profilURL.toString()),
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.of(context, rootNavigator: true).push(
+                              MaterialPageRoute(
+                                builder: (context) => Konusma(
+                                  currentUser: _userModel.user!,
+                                  sohbetEdileUser: oankiUser,
+                                ),
+                              ),
+                            );
+                          },
+                          child: ListTile(
+                            title: Text(oankiUser.userName.toString()),
+                            subtitle: Text(oankiUser.email.toString()),
+                            leading: CircleAvatar(
+                              backgroundImage:
+                                  NetworkImage(oankiUser.profilURL.toString()),
+                            ),
                           ),
                         );
                       } else {}
