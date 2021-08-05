@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_lovers/model/user.dart';
-import 'package:flutter_lovers/services/database.base.dart';
+
+import 'package:flutter_lovers/services/database_base.dart';
 
 class FirestoreDBService implements DBBase {
   final FirebaseFirestore _firebaseDB = FirebaseFirestore.instance;
@@ -41,5 +42,28 @@ class FirestoreDBService implements DBBase {
           .update({"userName": yeniUserName});
       return true;
     }
+  }
+
+  Future<bool> updateProfilFoto(String userID, String profilFotoUrl) async {
+    await _firebaseDB
+        .collection("users")
+        .doc(userID)
+        .update({"profilURL": profilFotoUrl});
+    return true;
+  }
+
+  @override
+  Future<List<MyUser>> getAllUserr() async {
+    QuerySnapshot<Map<String, dynamic>> querySnapshot =
+        await _firebaseDB.collection("users").get();
+    List<MyUser> allUsers = [];
+    for (QueryDocumentSnapshot<Map<String, dynamic>> tekKullanici
+        in querySnapshot.docs) {
+      MyUser _user = MyUser.fromMap(tekKullanici.data());
+      print("okunan user:" + tekKullanici.data().toString());
+      allUsers.add(_user);
+    }
+    return allUsers;
+    ;
   }
 }

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_lovers/services/storage_base.dart';
+import 'package:image_picker/image_picker.dart';
 
 class FirebaseStorageService implements StorageBase {
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
@@ -9,8 +10,12 @@ class FirebaseStorageService implements StorageBase {
 
   @override
   Future<String> uploadFile(
-      String userID, String fileType, File? yukleneecekDosya) async {
-    _storageReferance = _firebaseStorage.ref().child(userID).child(fileType);
+      String userID, String fileType, XFile? yukleneecekDosya) async {
+    _storageReferance = _firebaseStorage
+        .ref()
+        .child(userID)
+        .child(fileType)
+        .child("prfil.foto.png");
     UploadTask _uploadTask =
         _storageReferance!.putFile(File(yukleneecekDosya!.path));
     String? _url;

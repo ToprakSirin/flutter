@@ -14,7 +14,6 @@ class ProfilPage extends StatefulWidget {
 
 class _ProfilPageState extends State<ProfilPage> {
   TextEditingController? _controllerUserName;
-
   XFile? _profilPhoto;
 
   @override
@@ -32,8 +31,8 @@ class _ProfilPageState extends State<ProfilPage> {
   @override
   Widget build(BuildContext context) {
     final _userModel = Provider.of<UserViewModel>(context);
-    _controllerUserName!.text = _userModel.user!.userName!;
     print("Profil sayfasındaki user değerleri" + _userModel.user.toString());
+    _controllerUserName!.text = _userModel.user!.userName!;
     return Scaffold(
       appBar: AppBar(
         title: Text("Profil"),
@@ -83,8 +82,7 @@ class _ProfilPageState extends State<ProfilPage> {
                   child: CircleAvatar(
                     radius: 75,
                     backgroundColor: Colors.white,
-                    backgroundImage:
-                        NetworkImage(_userModel.user!.profilURL.toString()),
+                    //backgroundImage: _profilFoto == null ? NetworkImage(_userModel.user!.profilURL) : FileImage(_profilPhoto),
                   ),
                 ),
               ),
@@ -169,7 +167,7 @@ class _ProfilPageState extends State<ProfilPage> {
 
   void _kameradanFotoCek() async {
     ImagePicker _picker = ImagePicker();
-    XFile? _yeniResim = await _picker.pickImage(source: ImageSource.camera);
+    var _yeniResim = await _picker.pickImage(source: ImageSource.camera);
     setState(() {
       _profilPhoto = _yeniResim;
       Navigator.of(context).pop();
@@ -178,7 +176,7 @@ class _ProfilPageState extends State<ProfilPage> {
 
   void _galeridenFotoSec() async {
     ImagePicker _picker = ImagePicker();
-    XFile? _yeniResim = await _picker.pickImage(source: ImageSource.gallery);
+    var _yeniResim = await _picker.pickImage(source: ImageSource.gallery);
 
     setState(() {
       _profilPhoto = _yeniResim;
@@ -186,11 +184,20 @@ class _ProfilPageState extends State<ProfilPage> {
     });
   }
 
-  void _profilFotoGuncelle(BuildContext context, UserViewModel userModel)async{
-    if(_profilPhoto!=null){
-  String url = await userModel.uploadFile(
-          userModel.user!.userID, "profil_photo", _profilPhoto!);
+  void _profilFotoGuncelle(
+      BuildContext context, UserViewModel userModel) async {
+    if (_profilPhoto != null) {
+      String url = await userModel.uploadFile(
+          userModel.user!.userID, "profil_foto", _profilPhoto!);
       print("gelen url: $url");
+
+      if (url != null) {
+        PlatformDuyarliAlertDialog(
+                baslik: "Hata",
+                icerik: "Profil fotoğrafınız güncellendi",
+                anaButonYazisi: "Tamam")
+            .goster(context);
+      }
     }
   }
 }

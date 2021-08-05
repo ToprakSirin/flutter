@@ -1,8 +1,11 @@
+import 'dart:io';
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter_lovers/locator.dart';
 import 'package:flutter_lovers/model/user.dart';
 import 'package:flutter_lovers/repository/user_repository.dart';
-import 'package:flutter_lovers/services/auth_base.dart';
+
 
 enum ViewState { Idle, Busy }
 
@@ -139,4 +142,17 @@ class UserViewModel with ChangeNotifier implements UserRepository {
 
     return sonuc;
   }
+
+  Future<String> uploadFile(String? userID, String fileType, profilFoto) async {
+    String indirmeLinki =
+        await _userRepostory.uploadFile(userID, fileType, profilFoto);
+    return indirmeLinki;
+  }
+
+
+   Future<List<MyUser>> getAllUser() async {
+    List<MyUser> allUsers = await _userRepostory.getAllUser();
+    return allUsers;
+  }
+
 }
