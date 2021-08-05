@@ -1,11 +1,10 @@
 import 'dart:io';
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_lovers/locator.dart';
+import 'package:flutter_lovers/model/mesaj.dart';
 import 'package:flutter_lovers/model/user.dart';
 import 'package:flutter_lovers/repository/user_repository.dart';
-
 
 enum ViewState { Idle, Busy }
 
@@ -149,10 +148,14 @@ class UserViewModel with ChangeNotifier implements UserRepository {
     return indirmeLinki;
   }
 
-
-   Future<List<MyUser>> getAllUser() async {
+  Future<List<MyUser>> getAllUser() async {
     List<MyUser> allUsers = await _userRepostory.getAllUser();
     return allUsers;
   }
 
+  Stream<List<Mesaj>> getMessages(
+      String currentUserID, String sohbetEdilenUserID) {
+    return _userRepostory.getMessages(currentUserID, sohbetEdilenUserID);
+    ;
+  }
 }
