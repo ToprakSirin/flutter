@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_lovers/common_widget/platform_duyarli_alert_dialog.dart';
 import 'package:flutter_lovers/common_widget/social_log_in_button.dart';
 import 'package:flutter_lovers/viewmodel/user_view_model.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class ProfilPage extends StatefulWidget {
@@ -11,6 +14,9 @@ class ProfilPage extends StatefulWidget {
 
 class _ProfilPageState extends State<ProfilPage> {
   TextEditingController? _controllerUserName;
+
+  XFile? _profilPhoto;
+
   @override
   void initState() {
     super.initState();
@@ -46,11 +52,40 @@ class _ProfilPageState extends State<ProfilPage> {
             children: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: CircleAvatar(
-                  radius: 75,
-                  backgroundColor: Colors.white,
-                  backgroundImage:
-                      NetworkImage(_userModel.user!.profilURL.toString()),
+                child: GestureDetector(
+                  onTap: () {
+                    showModalBottomSheet(
+                        context: context,
+                        builder: (context) {
+                          return Container(
+                            height: 160,
+                            child: Column(
+                              children: [
+                                ListTile(
+                                  leading: Icon(Icons.camera),
+                                  title: Text("Kameradan çek"),
+                                  onTap: () {
+                                    _kameradanFotoCek();
+                                  },
+                                ),
+                                ListTile(
+                                  leading: Icon(Icons.image),
+                                  title: Text("Galeriden Seç"),
+                                  onTap: () {
+                                    _galeridenFotoSec();
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        });
+                  },
+                  child: CircleAvatar(
+                    radius: 75,
+                    backgroundColor: Colors.white,
+                    backgroundImage:
+                        NetworkImage(_userModel.user!.profilURL.toString()),
+                  ),
                 ),
               ),
               Padding(
@@ -135,5 +170,23 @@ class _ProfilPageState extends State<ProfilPage> {
               anaButonYazisi: "Tamam")
           .goster(context);
     }
+  }
+
+  void _kameradanFotoCek() async {
+     ImagePicker _picker = ImagePicker();
+    XFile? _yeniResim = await _picker.pickImage(source: ImageSource.camera);
+      Navigator.of(context).pop();
+    setState(() {
+      _profilPhoto = _yeniResim;
+    });
+  }
+
+  void _galeridenFotoSec() async {
+       ImagePicker _picker = ImagePicker();
+    XFile? _yeniResim = await _picker.pickImage(source: ImageSource.gallery);
+      Navigator.of(context).pop();
+    setState(() {
+      _profilPhoto = _yeniResim;
+    });
   }
 }
