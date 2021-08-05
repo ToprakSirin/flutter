@@ -81,7 +81,7 @@ class _ProfilPageState extends State<ProfilPage> {
                   },
                   child: CircleAvatar(
                     radius: 75,
-                    backgroundColor: Colors.white,
+                 
                     //backgroundImage: _profilFoto == null ? NetworkImage(_userModel.user!.profilURL) : FileImage(_profilPhoto),
                   ),
                 ),
@@ -167,7 +167,7 @@ class _ProfilPageState extends State<ProfilPage> {
 
   void _kameradanFotoCek() async {
     ImagePicker _picker = ImagePicker();
-    var _yeniResim = await _picker.pickImage(source: ImageSource.camera);
+    XFile? _yeniResim = await _picker.pickImage(source: ImageSource.camera);
     setState(() {
       _profilPhoto = _yeniResim;
       Navigator.of(context).pop();
@@ -176,7 +176,7 @@ class _ProfilPageState extends State<ProfilPage> {
 
   void _galeridenFotoSec() async {
     ImagePicker _picker = ImagePicker();
-    var _yeniResim = await _picker.pickImage(source: ImageSource.gallery);
+    XFile? _yeniResim = await _picker.pickImage(source: ImageSource.gallery);
 
     setState(() {
       _profilPhoto = _yeniResim;
