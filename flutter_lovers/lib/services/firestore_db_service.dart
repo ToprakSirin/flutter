@@ -1,84 +1,160 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'package:flutter_lovers/model/konusma_model.dart';
 import 'package:flutter_lovers/model/mesaj.dart';
 import 'package:flutter_lovers/model/user.dart';
 
 import 'package:flutter_lovers/services/database_base.dart';
 
 class FirestoreDBService implements DBBase {
-  final FirebaseFirestore _firebaseDB = FirebaseFirestore.instance;
+  final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
   @override
   Future<bool> saveUser(MyUser user) async {
-    await _firebaseDB.collection("users").doc(user.userID).set(user.toMap());
-    DocumentSnapshot _okunanUser =
-        await FirebaseFirestore.instance.doc("users/${user.userID}").get();
+    await _firebaseFirestore
+        .collection("users")
+        .doc(user.userID)
+        .set(user.toMap());
 
     return true;
   }
 
   @override
-  Future<MyUser> readUser(String userID) async {
+  Future<MyUser> readUser(String userId) async {
     DocumentSnapshot _okunanUser =
-        await _firebaseDB.collection("users").doc(userID).get();
+        await _firebaseFirestore.doc("users/$userId").get();
     Map<String, dynamic> _okunanUserBilgileriMap =
         (_okunanUser.data() as Map<String, dynamic>);
 
-    MyUser _okunanUserNesnesi = MyUser.fromMap(_okunanUserBilgileriMap);
-    print("Okunan  User nesnesi: " + _okunanUserNesnesi.toString());
-    return _okunanUserNesnesi;
+    MyUser _okunanUserBilgileriNesne = MyUser.fromMap(_okunanUserBilgileriMap);
+
+    print("Read User: " + _okunanUserBilgileriNesne.toString());
+    return _okunanUserBilgileriNesne;
   }
 
   @override
-  Future<bool> updateUserName(String userID, String yeniUserName) async {
-    QuerySnapshot user = await _firebaseDB
+  Future<bool> updateUserName(String userId, String newUserName) async {
+    // burada newUserName değişkeninin değerinin aynısının olur olmadığını bulabiliriz
+    // eğer sonuc 1 dönerse aynısı vardır
+    // eğer sonuc 0 dönerse aynısı yoktur ve değiştirilebilir
+    QuerySnapshot user = await _firebaseFirestore
         .collection("users")
-        .where("userName", isEqualTo: yeniUserName)
+        .where("userName", isEqualTo: newUserName)
         .get();
-    //aynı isimde kullanıcı var demektir
     if (user.docs.length >= 1) {
+      // eğer length 1 ise aynı isimde kullanıcı var demektir
       return false;
     } else {
-      await _firebaseDB
+      await _firebaseFirestore
           .collection("users")
-          .doc(userID)
-          .update({"userName": yeniUserName});
+          .doc(userId)
+          .update({"userName": newUserName});
       return true;
     }
   }
 
-  Future<bool> updateProfilFoto(String userID, String profilFotoUrl) async {
-    await _firebaseDB
+  Future<bool> updateProfilPhoto(String userId, String photoUrl) async {
+    await _firebaseFirestore
         .collection("users")
-        .doc(userID)
-        .update({"profilURL": profilFotoUrl});
+        .doc(userId)
+        .update({"profilURL": photoUrl});
     return true;
   }
 
   @override
-  Future<List<MyUser>> getAllUserr() async {
+  Future<List<MyUser>> getAllUesr() async {
     QuerySnapshot<Map<String, dynamic>> querySnapshot =
-        await _firebaseDB.collection("users").get();
+        await _firebaseFirestore.collection("users").get();
     List<MyUser> allUsers = [];
-    for (QueryDocumentSnapshot<Map<String, dynamic>> tekKullanici
+    for (QueryDocumentSnapshot<Map<String, dynamic>> tekUser
         in querySnapshot.docs) {
-      MyUser _user = MyUser.fromMap(tekKullanici.data());
-     // print("okunan user:" + tekKullanici.data().toString());
+      MyUser _user = MyUser.fromMap(tekUser.data());
       allUsers.add(_user);
     }
     return allUsers;
-    ;
+  }
+
+  @override
+  Future<List<KonusmaModeli>> getAllConversations(String userId) async {
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await _firebaseFirestore
+        .collection("konusmalar")
+        .where("konusma_sahibi", isEqualTo: userId)
+        .orderBy("olusturulma_tarihi", descending: true)
+        .get();
+
+    List<KonusmaModeli> tumKonusmalar = [];
+
+    for (QueryDocumentSnapshot<Map<String, dynamic>> tekKonusma
+        in querySnapshot.docs) {
+      KonusmaModeli _tekKonusma = KonusmaModeli.fromMap(tekKonusma.data());
+      /*print("okunan konusma tarisi:" +
+          _tekKonusma.olusturulma_tarihi.toDate().toString());*/
+      tumKonusmalar.add(_tekKonusma);
+    }
+
+    return tumKonusmalar;
   }
 
   @override
   Stream<List<Mesaj>> getMessages(
-      String currentUserID, String sohbetEdilenUserID) {
-    Stream<QuerySnapshot<Map<String, dynamic>>> _snapshot = _firebaseDB
+      String currentUserId, String sohbetEdilenUserId) {
+    Stream<QuerySnapshot<Map<String, dynamic>>> _snapshot = _firebaseFirestore
         .collection("konusmalar")
-        .doc(currentUserID + "--" + sohbetEdilenUserID)
+        .doc(currentUserId + "--" + sohbetEdilenUserId)
         .collection("mesajlar")
         .orderBy("date", descending: true)
         .snapshots();
-    return _snapshot.map((mesajListesi) => mesajListesi.docs
-        .map((mesaj) => Mesaj.fromMap(mesaj.data()))
-        .toList());
+    return _snapshot.map((mesajListesi) =>
+        mesajListesi.docs.map((mesaj) => Mesaj.fromMap(mesaj.data())).toList());
+  }
+
+  Future<bool> saveMessage(Mesaj mesaj) async {
+    String _mesajID = _firebaseFirestore
+        .collection("konusmalar")
+        .doc()
+        .id; // rastgele id almak
+
+    String _myDocumentId =
+        mesaj.kimden + "--" + mesaj.kime; // mesaj gönderen id
+    String _receiverDocumentId =
+        mesaj.kime + "--" + mesaj.kimden; // mesaj alıcı id
+    Map<String, dynamic> _kaydedeilecekMesajMap = mesaj.toMap();
+    await _firebaseFirestore
+        .collection("konusmalar")
+        .doc(_myDocumentId)
+        .collection("mesajlar")
+        .doc(_mesajID)
+        .set(_kaydedeilecekMesajMap);
+
+    await _firebaseFirestore.collection("konusmalar").doc(_myDocumentId).set({
+      "konusma_sahibi": mesaj.kimden,
+      "kimle_konusuyor": mesaj.kime,
+      "son_yollanan_mesaj": mesaj.mesaj,
+      "konusma_goruldu": false,
+      "olusturulma_tarihi": FieldValue.serverTimestamp(),
+    });
+
+    // yukarıdaki kayıttan sonra sohbet edilen kişiyede kayıt yapılmalı
+    // bunun için "kimden" değişkenini değiştirmek gerekir
+
+    await _kaydedeilecekMesajMap.update("bendenMi", (value) => false);
+
+    await _firebaseFirestore
+        .collection("konusmalar")
+        .doc(_receiverDocumentId)
+        .collection("mesajlar")
+        .doc(_mesajID)
+        .set(_kaydedeilecekMesajMap);
+
+    await _firebaseFirestore
+        .collection("konusmalar")
+        .doc(_receiverDocumentId)
+        .set({
+      "konusma_sahibi": mesaj.kime,
+      "kimle_konusuyor": mesaj.kimden,
+      "son_yollanan_mesaj": mesaj.mesaj,
+      "konusma_goruldu": false,
+      "olusturulma_tarihi": FieldValue.serverTimestamp(),
+    });
+    return true;
   }
 }

@@ -1,16 +1,19 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_lovers/locator.dart';
+import 'package:flutter_lovers/model/konusma_model.dart';
+
 import 'package:flutter_lovers/model/mesaj.dart';
 import 'package:flutter_lovers/model/user.dart';
 import 'package:flutter_lovers/repository/user_repository.dart';
 
 enum ViewState { Idle, Busy }
 
+// idle boşta
+// busy meşgul
 class UserViewModel with ChangeNotifier implements UserRepository {
   ViewState _state = ViewState.Idle;
-  UserRepository _userRepostory = locator<UserRepository>();
+  UserRepository _repostory = locator<UserRepository>();
   MyUser? _user;
 
   //validate form login
@@ -33,7 +36,7 @@ class UserViewModel with ChangeNotifier implements UserRepository {
   Future<MyUser> currentUser() async {
     try {
       state = ViewState.Busy;
-      _user = await _userRepostory.currentUser();
+      _user = await _repostory.currentUser();
       return user!;
     } catch (e) {
       print("Hata userViewmodel currentstate");
@@ -47,7 +50,7 @@ class UserViewModel with ChangeNotifier implements UserRepository {
   Future<MyUser> signInAnonymously() async {
     try {
       state = ViewState.Busy;
-      _user = await _userRepostory.signInAnonymously();
+      _user = await _repostory.signInAnonymously();
       return user!;
     } catch (e) {
       print("Hata userViewmodel signin anon");
@@ -62,7 +65,7 @@ class UserViewModel with ChangeNotifier implements UserRepository {
     try {
       state = ViewState.Busy;
 
-      await _userRepostory.signOut();
+      await _repostory.signOut();
       _user = null;
 
       return true;
@@ -78,7 +81,7 @@ class UserViewModel with ChangeNotifier implements UserRepository {
   Future<MyUser> signInWithGoogle() async {
     try {
       state = ViewState.Busy;
-      _user = await _userRepostory.signInWithGoogle();
+      _user = await _repostory.signInWithGoogle();
       return user!;
     } catch (e) {
       print("Hata userViewmodel signin google");
@@ -94,8 +97,8 @@ class UserViewModel with ChangeNotifier implements UserRepository {
     if (_emailAndPasswordValidate(email, password)) {
       try {
         state = ViewState.Busy;
-        _user = await _userRepostory.createUserWithEmailAndPassword(
-            email, password);
+        _user =
+            await _repostory.createUserWithEmailAndPassword(email, password);
         return user!;
       } finally {
         state = ViewState.Idle;
@@ -109,8 +112,7 @@ class UserViewModel with ChangeNotifier implements UserRepository {
     try {
       if (_emailAndPasswordValidate(email, password)) {
         state = ViewState.Busy;
-        _user =
-            await _userRepostory.signInWithEmailAndPassword(email, password);
+        _user = await _repostory.signInWithEmailAndPassword(email, password);
         return user!;
       }
     } finally {
@@ -136,26 +138,33 @@ class UserViewModel with ChangeNotifier implements UserRepository {
     return sonuc;
   }
 
-  Future<bool> updateUserName(String userID, String yeniUserName) async {
-    bool sonuc = await _userRepostory.updateUserName(userID, yeniUserName);
+  Future<bool> updateUserName(String newUserName, String userId) async {
+    bool result = await _repostory.updateUserName(newUserName, userId);
 
-    return sonuc;
+    return result;
   }
 
-  Future<String> uploadFile(String? userID, String fileType, profilFoto) async {
-    String indirmeLinki =
-        await _userRepostory.uploadFile(userID, fileType, profilFoto);
-    return indirmeLinki;
+  Future<String> uploadFile(
+      String? userId, String fileType, profilPhoto) async {
+    String link = await _repostory.uploadFile(userId, fileType, profilPhoto!);
+    return link;
   }
 
   Future<List<MyUser>> getAllUser() async {
-    List<MyUser> allUsers = await _userRepostory.getAllUser();
+    List<MyUser> allUsers = await _repostory.getAllUser();
     return allUsers;
   }
 
   Stream<List<Mesaj>> getMessages(
-      String currentUserID, String sohbetEdilenUserID) {
-    return _userRepostory.getMessages(currentUserID, sohbetEdilenUserID);
-    ;
+      String currentUserserId, String sohbetEdilenUserUserId) {
+    return _repostory.getMessages(currentUserserId, sohbetEdilenUserUserId);
+  }
+
+  Future<bool> saveMessage(Mesaj mesaj) async {
+    return await _repostory.saveMessage(mesaj);
+  }
+
+  Future<List<KonusmaModeli>> getAllConversations(String userId) async {
+    return _repostory.getAllConversations(userId);
   }
 }

@@ -20,7 +20,7 @@ class SocialLoginButton extends StatelessWidget {
     this.buttonIcon,
     required this.onPressed,
     // assert ile buton textin null kullanılmaya çalışılması halinde hatanın kaynağını göstermiş olduk
-  }) : assert(buttonText != null);
+  }) ;
 
   @override
   Widget build(BuildContext context) {
