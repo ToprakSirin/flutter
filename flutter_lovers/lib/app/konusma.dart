@@ -6,45 +6,41 @@ import 'package:flutter_lovers/viewmodel/user_view_model.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class Konusma extends StatefulWidget {
+class KonusmaPage extends StatefulWidget {
   MyUser currentUser;
   MyUser sohbetEdilenUser;
-  Konusma({required this.currentUser, required this.sohbetEdilenUser});
+  KonusmaPage({required this.currentUser, required this.sohbetEdilenUser});
 
   @override
-  _KonusmaState createState() => _KonusmaState();
+  _KonusmaPageState createState() => _KonusmaPageState();
 }
 
-class _KonusmaState extends State<Konusma> {
-  var _mesajController = TextEditingController();
-  ScrollController _scrollController = new ScrollController();
-
+class _KonusmaPageState extends State<KonusmaPage> {
+  TextEditingController _messageController = TextEditingController();
+  ScrollController _scrollController = ScrollController();
+  @override
   Widget build(BuildContext context) {
     final _userModel = Provider.of<UserViewModel>(context);
     MyUser _currentUser = widget.currentUser;
     MyUser _sohbetEdilenUser = widget.sohbetEdilenUser;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Konuşma"),
-      ),
+      appBar: buildAppBar(_sohbetEdilenUser),
       body: Column(
         children: [
           Expanded(
-            child: StreamBuilder<List<Mesaj>>(
+            child: StreamBuilder<List<MessageModel>>(
               stream: _userModel.getMessages(
-                  _currentUser.userID!, _sohbetEdilenUser.userID!),
-              builder:
-                  (context, AsyncSnapshot<List<Mesaj>> streamMesajlarListesi) {
-                if (streamMesajlarListesi.hasData) {
+                  _currentUser.userId!, _sohbetEdilenUser.userId!),
+              builder: (context, AsyncSnapshot<List<MessageModel>> snapshot) {
+                if (snapshot.hasData) {
                   return ListView.builder(
                     reverse: true,
                     controller: _scrollController,
                     itemBuilder: (context, index) {
-                      return _konusmaBalonuOlustur(
-                          streamMesajlarListesi.data![index]);
+                      return _mesajBalonu(snapshot.data![index]);
                     },
-                    itemCount: streamMesajlarListesi.data!.length,
+                    itemCount: snapshot.data!.length,
                   );
                 } else {
                   return Center(
@@ -55,23 +51,15 @@ class _KonusmaState extends State<Konusma> {
             ),
           ),
           Container(
-            padding: EdgeInsets.only(bottom: 8, left: 8),
+            margin: EdgeInsets.all(15),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Expanded(
                   flex: 9,
                   child: TextField(
-                    controller: _mesajController,
-                    decoration: InputDecoration(
-                        fillColor: Colors.white,
-                        filled: true,
-                        hintText: "Mesajınızı yazın",
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30.0),
-                            borderSide: BorderSide.none)),
-                    cursorColor: Colors.blue,
-                    style: TextStyle(fontSize: 16.0, color: Colors.black),
+                    controller: _messageController,
+                    decoration: InputDecoration(),
                   ),
                 ),
                 Expanded(
@@ -79,15 +67,7 @@ class _KonusmaState extends State<Konusma> {
                   child: FloatingActionButton(
                     child: Icon(Icons.navigation),
                     onPressed: () {
-                      if (_mesajController.text.trim().length > 0) {
-                        Mesaj _kaydedilecekMesaj = Mesaj(
-                            kimden: _currentUser.userID.toString(),
-                            kime: _sohbetEdilenUser.userID.toString(),
-                            bendenMi: true,
-                            mesaj: _mesajController.text);
-
-                        _userModel.saveMessage(_kaydedilecekMesaj);
-                      }
+                      _messageSave(_currentUser, _sohbetEdilenUser, _userModel);
                     },
                   ),
                 ),
@@ -99,43 +79,71 @@ class _KonusmaState extends State<Konusma> {
     );
   }
 
-  Widget _konusmaBalonuOlustur(Mesaj oankiMesaj) {
-    Color _gelenMesajRenk = Colors.blue;
-    Color _gidenMesajRenk = Theme.of(context).primaryColor;
+  AppBar buildAppBar(MyUser _sohbetEdilenUser) {
+    return AppBar(
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          CircleAvatar(
+            backgroundImage:
+                NetworkImage(_sohbetEdilenUser.profilURL.toString()),
+          ),
+          SizedBox(width: 10),
+          Text(_sohbetEdilenUser.userName.toString()),
+        ],
+      ),
+    );
+  }
 
-    var _saatDakikaDegeri = "";
-
-    try {
-      _saatDakikaDegeri = _saatDakikaGoster(oankiMesaj.date ?? Timestamp(1, 1));
-    } catch (e) {
-      print("hata var:" + e.toString());
+  Future<void> _messageSave(MyUser currentUser, MyUser sohbetEdilenUser,
+      UserViewModel userModel) async {
+    if (_messageController.text.trim().length > 0) {
+      MessageModel _mesaj = MessageModel(
+        bendenMi: true,
+        kimden: currentUser.userId.toString(),
+        kime: sohbetEdilenUser.userId.toString(),
+        message: _messageController.text,
+      );
+      _messageController.clear();
+      await userModel.saveMessage(_mesaj);
     }
+    _scrollController.animateTo(0,
+        duration: Duration(milliseconds: 150), curve: Curves.bounceInOut);
+  }
 
-    var _benimMesajimMi = oankiMesaj.bendenMi;
-    if (_benimMesajimMi) {
+  Widget _mesajBalonu(MessageModel anlikMesaj) {
+    Color _gidenMesajColor = Colors.blue;
+    Color _gelenMesajColor = Colors.teal;
+    bool myMessage = anlikMesaj.bendenMi;
+    String? _saatDakikaDegeri =
+        _saatDakikaFormat(anlikMesaj.date ?? Timestamp(1, 1));
+
+    if (myMessage) {
       return Padding(
-        padding: EdgeInsets.all(8),
+        padding: EdgeInsets.all(15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
-          children: <Widget>[
+          children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
+              children: [
                 Flexible(
                   child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      color: _gidenMesajRenk,
-                    ),
                     padding: EdgeInsets.all(10),
-                    margin: EdgeInsets.all(4),
+                    margin: EdgeInsets.all(5),
                     child: Text(
-                      oankiMesaj.mesaj,
+                      anlikMesaj.message,
                       style: TextStyle(color: Colors.white),
+                    ),
+                    decoration: BoxDecoration(
+                      color: _gidenMesajColor,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(17),
+                      ),
                     ),
                   ),
                 ),
-                Text(_saatDakikaDegeri),
+                Text(_saatDakikaDegeri.toString()),
               ],
             ),
           ],
@@ -143,36 +151,42 @@ class _KonusmaState extends State<Konusma> {
       );
     } else {
       return Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(15.0),
         child: Column(
-          children: <Widget>[
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             Row(
-              children: <Widget>[
+              children: [
                 CircleAvatar(
-                  backgroundColor: Colors.grey.withAlpha(40),
+                  backgroundImage: NetworkImage(
+                      widget.sohbetEdilenUser.profilURL.toString()),
                 ),
                 Flexible(
                   child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      color: _gelenMesajRenk,
-                    ),
                     padding: EdgeInsets.all(10),
-                    margin: EdgeInsets.all(4),
-                    child: Text(oankiMesaj.mesaj),
+                    margin: EdgeInsets.all(5),
+                    child: Text(
+                      anlikMesaj.message,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    decoration: BoxDecoration(
+                      color: _gelenMesajColor,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(17),
+                      ),
+                    ),
                   ),
                 ),
-                Text(_saatDakikaDegeri),
+                Text(_saatDakikaDegeri.toString()),
               ],
             )
           ],
-          crossAxisAlignment: CrossAxisAlignment.start,
         ),
       );
     }
   }
 
-  String _saatDakikaGoster(Timestamp? date) {
+  String _saatDakikaFormat(Timestamp? date) {
     return DateFormat.Hm().format(date!.toDate());
   }
 }

@@ -1,5 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_lovers/common_widget/platform_duyarli_alert_dialog.dart';
+import 'package:flutter_lovers/common_widget/platform_duyarli_widgetler/platform_duyarli_alert_dialog.dart';
 import 'package:flutter_lovers/common_widget/social_log_in_button.dart';
 import 'package:flutter_lovers/viewmodel/user_view_model.dart';
 import 'package:image_picker/image_picker.dart';
@@ -11,32 +13,33 @@ class ProfilPage extends StatefulWidget {
 }
 
 class _ProfilPageState extends State<ProfilPage> {
-  TextEditingController? _controllerUserName;
+  TextEditingController? _userNameController;
   XFile? _profilPhoto;
 
   @override
   void initState() {
     super.initState();
-    _controllerUserName = TextEditingController();
+    _userNameController = TextEditingController();
   }
 
   @override
   void dispose() {
-    _controllerUserName!.dispose();
+    _userNameController!.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final _userModel = Provider.of<UserViewModel>(context);
-    print("Profil sayfasındaki user değerleri" + _userModel.user.toString());
-    _controllerUserName!.text = _userModel.user!.userName!;
+    print("User profil:" + _userModel.user.toString());
+    _userNameController!.text = _userModel.user!.userName.toString();
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Profil"),
         actions: [
           TextButton(
-            onPressed: () => _cikisIcinOnayIste(context, _userModel),
+            onPressed: () => _cikisOnayi(context, _userModel),
             child: Icon(
               Icons.exit_to_app,
               color: Colors.white,
@@ -51,38 +54,38 @@ class _ProfilPageState extends State<ProfilPage> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: GestureDetector(
+                  child: CircleAvatar(
+                    radius: 65,
+                    backgroundImage: imageProvider(_userModel),
+                  ),
                   onTap: () {
                     showModalBottomSheet(
-                        context: context,
-                        builder: (context) {
-                          return Container(
-                            height: 160,
-                            child: Column(
-                              children: [
-                                ListTile(
-                                  leading: Icon(Icons.camera),
-                                  title: Text("Kameradan çek"),
-                                  onTap: () {
-                                    _kameradanFotoCek();
-                                  },
-                                ),
-                                ListTile(
-                                  leading: Icon(Icons.image),
-                                  title: Text("Galeriden Seç"),
-                                  onTap: () {
-                                    _galeridenFotoSec();
-                                  },
-                                ),
-                              ],
+                      enableDrag: false,
+                      context: context,
+                      builder: (context) {
+                        return Container(
+                          height: MediaQuery.of(context).size.height * 0.25,
+                          child:
+                              Column(mainAxisSize: MainAxisSize.min, children: [
+                            ListTile(
+                              leading: Icon(Icons.camera),
+                              title: Text("Kameradan seç"),
+                              onTap: () {
+                                _kameradanFotoSec();
+                              },
                             ),
-                          );
-                        });
+                            ListTile(
+                              leading: Icon(Icons.image),
+                              title: Text("Galeriden seç"),
+                              onTap: () {
+                                _galeridenFotoSec();
+                              },
+                            ),
+                          ]),
+                        );
+                      },
+                    );
                   },
-                  child: CircleAvatar(
-                    radius: 75,
-
-                    //backgroundImage: _profilFoto == null ? NetworkImage(_userModel.user!.profilURL) : FileImage(_profilPhoto),
-                  ),
                 ),
               ),
               Padding(
@@ -91,31 +94,28 @@ class _ProfilPageState extends State<ProfilPage> {
                   initialValue: _userModel.user!.email.toString(),
                   readOnly: true,
                   decoration: InputDecoration(
-                      labelText: "Emailiniz",
-                      hintText: 'Email',
-                      border: OutlineInputBorder()),
+                    labelText: "Email",
+                    border: OutlineInputBorder(),
+                  ),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
-                  controller: _controllerUserName,
-                  // initialValue: _userModel.user!.userName,
+                  controller: _userNameController,
                   decoration: InputDecoration(
-                      labelText: "Kullanıcı Adı",
-                      hintText: 'KullanıcıAdı',
-                      border: OutlineInputBorder()),
+                    labelText: "User Nmae",
+                    border: OutlineInputBorder(),
+                  ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SocialLoginButton(
-                    buttonText: "Değişiklikleri Kaydet",
-                    onPressed: () {
-                      _userNameGuncelle(context, _userModel);
-                      _profilFotoGuncelle(context, _userModel);
-                    }),
-              )
+              SocialLoginButton(
+                buttonText: "Değişiklikleri kaydet",
+                onPressed: () {
+                  _userNameGuncelle(context, _userModel);
+                  _profilPhotoGuncelle(context, _userModel);
+                },
+              ),
             ],
           ),
         ),
@@ -123,79 +123,89 @@ class _ProfilPageState extends State<ProfilPage> {
     );
   }
 
-  Future<bool> _cikisIcinOnayIste(
-      BuildContext context, UserViewModel userModel) async {
-    bool sonuc = await PlatformDuyarliAlertDialog(
-      baslik: "Emin misiniz",
-      icerik: "Çıkmak İstediğinizden emin misiniz?",
-      anaButonYazisi: "Onayla",
-      iptalButonYazisi: "Vazgeç",
-    ).goster(context);
-    if (sonuc == true) {
-      _cikisYap(userModel, context);
-    }
-    return sonuc;
-  }
-
   Future<bool> _cikisYap(UserViewModel userModel, BuildContext context) async {
     bool sonuc = await userModel.signOut();
     return sonuc;
   }
 
-  void _userNameGuncelle(BuildContext context, UserViewModel userModel) async {
-    if (userModel.user!.userName != _controllerUserName!.text) {
-      bool updateResult = await userModel.updateUserName(
-          userModel.user!.userID.toString(), _controllerUserName!.text);
+  Future<bool> _cikisOnayi(
+      BuildContext context, UserViewModel userModel) async {
+    bool result = await PlatformDuyarliAlertDialog(
+      title: "Çıkış onayı",
+      contentText: "Çıkışı onaylıyor musunuz?",
+      basicButtonText: "Onayla",
+      cancelButtonText: "Vazgeç",
+    ).dialogGoster(context);
+    if (result) {
+      _cikisYap(userModel, context);
+    }
+    return result;
+  }
 
+  Future<void> _userNameGuncelle(
+      BuildContext context, UserViewModel userModel) async {
+    if (userModel.user!.userName != _userNameController!.text) {
+      bool updateResult = await userModel.updateUserName(
+          _userNameController!.text, userModel.user!.userId.toString());
+
+      print("update result profil $updateResult");
       if (updateResult == true) {
-        userModel.user!.userName = _controllerUserName!.text;
-        PlatformDuyarliAlertDialog(
-                baslik: "Başarılı",
-                icerik: "UserName değiştirildi",
-                anaButonYazisi: "Tamam")
-            .goster(context);
+        userModel.user!.userName = _userNameController!.text.toString();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text("user name update işlemi başarılı"),
+              duration: Duration(milliseconds: 1200)),
+        );
       } else {
-        PlatformDuyarliAlertDialog(
-                baslik: "Hata",
-                icerik: "UserName dzatewn kullanımda farklı giriniz",
-                anaButonYazisi: "Tamam")
-            .goster(context);
+        print("başarısız ");
+        _userNameController!.text = userModel.user!.userName.toString();
+        await PlatformDuyarliAlertDialog(
+          title: "User Name Update",
+          contentText: "User name zaten kullanılmakta",
+          basicButtonText: "Tamam",
+        ).dialogGoster(context);
       }
     }
   }
 
-  void _kameradanFotoCek() async {
+  void _kameradanFotoSec() async {
+    Navigator.of(context).pop();
     ImagePicker _picker = ImagePicker();
-    XFile? _yeniResim = await _picker.pickImage(source: ImageSource.camera);
+    XFile? _newPhoto = await _picker.pickImage(source: ImageSource.camera);
     setState(() {
-      _profilPhoto = _yeniResim;
-      Navigator.of(context).pop();
+      _profilPhoto = _newPhoto;
     });
   }
 
   void _galeridenFotoSec() async {
+    Navigator.of(context).pop();
     ImagePicker _picker = ImagePicker();
-    XFile? _yeniResim = await _picker.pickImage(source: ImageSource.gallery);
-
+    XFile? _newPhoto = await _picker.pickImage(source: ImageSource.gallery);
     setState(() {
-      _profilPhoto = _yeniResim;
-      Navigator.of(context).pop();
+      _profilPhoto = _newPhoto;
     });
   }
 
-  void _profilFotoGuncelle(
+  ImageProvider imageProvider(UserViewModel userModel) {
+    if (_profilPhoto == null) {
+      return NetworkImage(userModel.user!.profilURL.toString());
+    } else {
+      return FileImage(File(_profilPhoto!.path));
+    }
+  }
+
+  void _profilPhotoGuncelle(
       BuildContext context, UserViewModel userModel) async {
     if (_profilPhoto != null) {
       String url = await userModel.uploadFile(
-          userModel.user!.userID, "profil_foto", _profilPhoto!);
+          userModel.user!.userId, "profil_photo", _profilPhoto!);
       print("gelen url: $url");
-
       if (url != null) {
-        PlatformDuyarliAlertDialog(
-                baslik: "Hata",
-                icerik: "Profil fotoğrafınız güncellendi",
-                anaButonYazisi: "Tamam")
-            .goster(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text("Profil photo update işlemi başarılı"),
+              duration: Duration(milliseconds: 1200)),
+        );
       }
     }
   }

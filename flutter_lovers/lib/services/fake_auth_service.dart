@@ -1,13 +1,12 @@
 import 'package:flutter_lovers/model/user.dart';
 import 'package:flutter_lovers/services/auth_base.dart';
-
 class FakeAuthService implements AuthBase {
   String userId = "123456";
   String email = "123@gmail.com";
   @override
   Future<MyUser> currentUser() async {
     return await Future.value(
-      MyUser(userID: userId, email: email),
+      MyUser(userId: userId, email: email),
     );
   }
 
@@ -15,7 +14,7 @@ class FakeAuthService implements AuthBase {
   Future<MyUser> signInAnonymously() async {
     return await Future.delayed(
       Duration(seconds: 1),
-      () => MyUser(userID: userId, email: email),
+      () => MyUser(userId: userId, email: email),
     );
   }
 
@@ -28,19 +27,18 @@ class FakeAuthService implements AuthBase {
   Future<MyUser> signInWithGoogle() async {
     return await Future.delayed(
       Duration(seconds: 1),
-      () => MyUser(userID: "googleuserid", email: "google@gmail.com"),
+      () => MyUser(userId: "googleuserid", email: "google@gmail.com"),
     );
   }
 
-
-
+ 
   @override
   Future<MyUser> createUserWithEmailAndPassword(
       String email, String password) async {
     return await Future.delayed(
         Duration(seconds: 1),
         () => MyUser(
-            userID: "createEmialAndPasswordid", email: "create@gmail.com"));
+            userId: "createEmialAndPasswordid", email: "create@gmail.com"));
   }
 
   @override
@@ -49,6 +47,6 @@ class FakeAuthService implements AuthBase {
     return await Future.delayed(
         Duration(seconds: 1),
         () => MyUser(
-            userID: "signinEmialAndPasswordid", email: "email@gmail.com"));
+            userId: "signinEmialAndPasswordid", email: "email@gmail.com"));
   }
 }

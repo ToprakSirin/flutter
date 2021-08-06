@@ -11,9 +11,9 @@ enum ViewState { Idle, Busy }
 
 // idle boşta
 // busy meşgul
-class UserViewModel with ChangeNotifier implements UserRepository {
+class UserViewModel with ChangeNotifier implements UserRepostory {
   ViewState _state = ViewState.Idle;
-  UserRepository _repostory = locator<UserRepository>();
+  UserRepostory _repostory = locator<UserRepostory>();
   MyUser? _user;
 
   //validate form login
@@ -91,6 +91,8 @@ class UserViewModel with ChangeNotifier implements UserRepository {
     }
   }
 
+  
+
   @override
   Future<MyUser?> createUserWithEmailAndPassword(
       String email, String password) async {
@@ -155,16 +157,16 @@ class UserViewModel with ChangeNotifier implements UserRepository {
     return allUsers;
   }
 
-  Stream<List<Mesaj>> getMessages(
+  Stream<List<MessageModel>> getMessages(
       String currentUserserId, String sohbetEdilenUserUserId) {
     return _repostory.getMessages(currentUserserId, sohbetEdilenUserUserId);
   }
 
-  Future<bool> saveMessage(Mesaj mesaj) async {
+  Future<bool> saveMessage(MessageModel mesaj) async {
     return await _repostory.saveMessage(mesaj);
   }
 
-  Future<List<KonusmaModeli>> getAllConversations(String userId) async {
+  Future<List<KonusmaModel>> getAllConversations(String userId) async {
     return _repostory.getAllConversations(userId);
   }
 }

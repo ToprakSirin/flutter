@@ -17,7 +17,7 @@ class FirebaseAuthService implements AuthBase {
   }
 
   MyUser _useFromFirebase(User user) {
-    return MyUser(userID: user.uid, email: user.email.toString());
+    return MyUser(userId: user.uid, email: user.email.toString());
   }
 
   @override
@@ -36,7 +36,7 @@ class FirebaseAuthService implements AuthBase {
     try {
       final _googleSignIn = GoogleSignIn();
       _googleSignIn.signOut();
-   
+
       await _firebaseAuth.signOut();
       return true;
     } catch (e) {
@@ -69,7 +69,6 @@ class FirebaseAuthService implements AuthBase {
     }
   }
 
- 
 
   @override
   Future<MyUser> createUserWithEmailAndPassword(

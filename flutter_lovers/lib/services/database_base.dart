@@ -8,10 +8,11 @@ abstract class DBBase {
   Future<bool> updateUserName(String userId, String newUserName);
   Future<bool> updateProfilPhoto(String userId, String photoUrl);
   Future<List<MyUser>> getAllUesr();
-  Future<List<KonusmaModeli>> getAllConversations(
+  Future<List<KonusmaModel>> getAllConversations(
       String userId); // konusmaların getirilmesi
-  Stream<List<Mesaj>> getMessages(
+  Stream<List<MessageModel>> getMessages(
       String currentUserId, String sohbetEdilenUserId);
-  Future<bool> saveMessage(Mesaj mesaj);
+  Future<bool> saveMessage(MessageModel mesaj);
+  Future<DateTime> saatiGoster(String userId);
 
 }

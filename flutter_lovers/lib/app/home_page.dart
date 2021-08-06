@@ -11,10 +11,7 @@ import 'package:provider/provider.dart';
 //sadece oturum açmış kullanıcıların görmesi gereken sayfa
 class HomePage extends StatefulWidget {
   final MyUser user;
-
-  HomePage({
-    required this.user,
-  });
+  HomePage({required this.user});
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -22,6 +19,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   TabItem _currentTab = TabItem.Kullanicilar;
+  Map<TabItem, Widget> tumSayfalar() {
+    return {
+      TabItem.Kullanicilar: KullanicilarPage(),
+      TabItem.Konusmalarim: KonusmalarimPage(),
+      TabItem.Profil: ProfilPage(),
+    };
+  }
 
   Map<TabItem, GlobalKey<NavigatorState>> navigatorKeys = {
     TabItem.Kullanicilar: GlobalKey<NavigatorState>(),
@@ -29,47 +33,34 @@ class _HomePageState extends State<HomePage> {
     TabItem.Profil: GlobalKey<NavigatorState>(),
   };
 
-  Map<TabItem, Widget> tumSayfalar() {
-    return {
-      TabItem.Kullanicilar: KullanicilarPage(),
-      TabItem.Konusmalarim: KonusmalarimPage(),
-      TabItem.Profil: ProfilPage()
-    };
-  }
-
   @override
   Widget build(BuildContext context) {
-    final _userModel = Provider.of<UserViewModel>(context);
-
     return WillPopScope(
       onWillPop: () async =>
           !await navigatorKeys[_currentTab]!.currentState!.maybePop(),
-      child: MyCustomBottomNavigaton(
-        sayfaOlusturucu: tumSayfalar(),
-        navigatorKeys: navigatorKeys,
+      child: MyCustomBottomNavigation(
         currentTab: _currentTab,
         onSelectedTab: (secilenTab) {
           if (secilenTab == _currentTab) {
             navigatorKeys[secilenTab]!
                 .currentState!
                 .popUntil((route) => route.isFirst);
+            // is first ile stacteki ilk elemana kadar pop yapmış olduk
           } else {
             setState(() {
               _currentTab = secilenTab;
+              /** 
+               * refresh kullanımı olmaz ise buradaki kodlar ile anlık güncelleme yapılabilir
+              if (_currentTab == TabItem.Konusmalarim) {
+                (context as Element).reassemble(); // yeniden build etmeye yarar
+              }*/
             });
           }
-          debugPrint("Seçilen tab item:" + secilenTab.toString());
+          print("Secilen tab: " + secilenTab.toString());
         },
+        sayfaOlustur: tumSayfalar(),
+        navigatorKeys: navigatorKeys,
       ),
     );
   }
 }
-
-/**
- 
-  _cikisYap(UserViewModel userModel) async {
-    bool sonuc = await userModel.signOut();
-
-    return sonuc;
-  }
- */

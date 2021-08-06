@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_lovers/app/hata_exception.dart';
-import 'package:flutter_lovers/common_widget/platform_duyarli_alert_dialog.dart';
+import 'package:flutter_lovers/common_widget/platform_duyarli_widgetler/platform_duyarli_alert_dialog.dart';
 
 import 'package:flutter_lovers/common_widget/social_log_in_button.dart';
 
@@ -32,21 +32,21 @@ class _EmailAndPasswordLoginPageState extends State<EmailAndPasswordLoginPage> {
       try {
         await _userModel.signInWithEmailAndPassword(_email!, _password!);
       } catch (e) {
-        /*    PlatformDuyarliAlertDialog(
+        PlatformDuyarliAlertDialog(
           title: "Oturum Açılamadı",
           contentText: Exceptions.hataGoster(e.toString().toString()),
           basicButtonText: 'Tamam',
-        ).dialogGoster(context); */
+        ).dialogGoster(context);
       }
     } else {
       try {
         await _userModel.createUserWithEmailAndPassword(_email!, _password!);
       } catch (e) {
-        /*  PlatformDuyarliAlertDialog(
+        PlatformDuyarliAlertDialog(
           title: "Kayıt olmada hata",
           contentText: Exceptions.hataGoster(e.toString().toString()),
           basicButtonText: 'Tamam',
-        ).dialogGoster(context); */
+        ).dialogGoster(context);
       }
     }
   }

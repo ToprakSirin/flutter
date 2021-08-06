@@ -12,7 +12,7 @@ class FirestoreDBService implements DBBase {
   Future<bool> saveUser(MyUser user) async {
     await _firebaseFirestore
         .collection("users")
-        .doc(user.userID)
+        .doc(user.userId)
         .set(user.toMap());
 
     return true;
@@ -74,18 +74,18 @@ class FirestoreDBService implements DBBase {
   }
 
   @override
-  Future<List<KonusmaModeli>> getAllConversations(String userId) async {
+  Future<List<KonusmaModel>> getAllConversations(String userId) async {
     QuerySnapshot<Map<String, dynamic>> querySnapshot = await _firebaseFirestore
         .collection("konusmalar")
         .where("konusma_sahibi", isEqualTo: userId)
         .orderBy("olusturulma_tarihi", descending: true)
         .get();
 
-    List<KonusmaModeli> tumKonusmalar = [];
+    List<KonusmaModel> tumKonusmalar = [];
 
     for (QueryDocumentSnapshot<Map<String, dynamic>> tekKonusma
         in querySnapshot.docs) {
-      KonusmaModeli _tekKonusma = KonusmaModeli.fromMap(tekKonusma.data());
+      KonusmaModel _tekKonusma = KonusmaModel.fromMap(tekKonusma.data());
       /*print("okunan konusma tarisi:" +
           _tekKonusma.olusturulma_tarihi.toDate().toString());*/
       tumKonusmalar.add(_tekKonusma);
@@ -95,7 +95,7 @@ class FirestoreDBService implements DBBase {
   }
 
   @override
-  Stream<List<Mesaj>> getMessages(
+  Stream<List<MessageModel>> getMessages(
       String currentUserId, String sohbetEdilenUserId) {
     Stream<QuerySnapshot<Map<String, dynamic>>> _snapshot = _firebaseFirestore
         .collection("konusmalar")
@@ -103,11 +103,12 @@ class FirestoreDBService implements DBBase {
         .collection("mesajlar")
         .orderBy("date", descending: true)
         .snapshots();
-    return _snapshot.map((mesajListesi) =>
-        mesajListesi.docs.map((mesaj) => Mesaj.fromMap(mesaj.data())).toList());
+    return _snapshot.map((mesajListesi) => mesajListesi.docs
+        .map((mesaj) => MessageModel.fromMap(mesaj.data()))
+        .toList());
   }
 
-  Future<bool> saveMessage(Mesaj mesaj) async {
+  Future<bool> saveMessage(MessageModel mesaj) async {
     String _mesajID = _firebaseFirestore
         .collection("konusmalar")
         .doc()
@@ -128,7 +129,7 @@ class FirestoreDBService implements DBBase {
     await _firebaseFirestore.collection("konusmalar").doc(_myDocumentId).set({
       "konusma_sahibi": mesaj.kimden,
       "kimle_konusuyor": mesaj.kime,
-      "son_yollanan_mesaj": mesaj.mesaj,
+      "son_yollanan_mesaj": mesaj.message,
       "konusma_goruldu": false,
       "olusturulma_tarihi": FieldValue.serverTimestamp(),
     });
@@ -151,10 +152,24 @@ class FirestoreDBService implements DBBase {
         .set({
       "konusma_sahibi": mesaj.kime,
       "kimle_konusuyor": mesaj.kimden,
-      "son_yollanan_mesaj": mesaj.mesaj,
+      "son_yollanan_mesaj": mesaj.message,
       "konusma_goruldu": false,
       "olusturulma_tarihi": FieldValue.serverTimestamp(),
     });
     return true;
+  }
+
+  @override
+  Future<DateTime> saatiGoster(String userId) async {
+    await _firebaseFirestore
+        .collection("server")
+        .doc(userId)
+        .set({"saat": FieldValue.serverTimestamp()});
+
+    DocumentSnapshot okunanMap =
+        await _firebaseFirestore.collection("server").doc(userId).get();
+    Timestamp okunanTarih = okunanMap["saat"];
+
+    return okunanTarih.toDate();
   }
 }

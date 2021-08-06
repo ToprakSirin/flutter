@@ -1,5 +1,5 @@
-class Hatalar {
-  static String goster(String hataKodu) {
+class Exceptions {
+  static String hataGoster(String hataKodu) {
     switch (hataKodu) {
       case "[firebase_auth/emaıl-already-ın-use] The email address is already in use by another account.":
         return "Bu mail adresi zaten kullanılmakta";

@@ -8,10 +8,11 @@ import 'package:flutter_lovers/services/firebase_auth.service.dart';
 import 'package:flutter_lovers/services/firebase_storage_service.dart';
 import 'package:flutter_lovers/services/firestore_db_service.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 enum AppMode { DEBUG, RELEASE }
 
-class UserRepository implements AuthBase {
+class UserRepostory implements AuthBase {
   FirebaseAuthService _firebaseAuthService = locator<FirebaseAuthService>();
   FakeAuthService _fakeAuthService = locator<FakeAuthService>();
   FirestoreDBService _firestoreDBService = locator<FirestoreDBService>();
@@ -26,7 +27,7 @@ class UserRepository implements AuthBase {
       return await _fakeAuthService.currentUser();
     } else {
       MyUser _user = await _firebaseAuthService.currentUser();
-      return await _firestoreDBService.readUser(_user.userID.toString());
+      return await _firestoreDBService.readUser(_user.userId.toString());
     }
   }
 
@@ -62,7 +63,7 @@ class UserRepository implements AuthBase {
       MyUser _user = await _firebaseAuthService.signInWithGoogle();
       bool result = await _firestoreDBService.saveUser(_user);
       if (result) {
-        return await _firestoreDBService.readUser(_user.userID.toString());
+        return await _firestoreDBService.readUser(_user.userId.toString());
       } else {
         throw Exception();
       }
@@ -80,7 +81,7 @@ class UserRepository implements AuthBase {
           email, password);
       bool result = await _firestoreDBService.saveUser(_user);
       if (result) {
-        return await _firestoreDBService.readUser(_user.userID.toString());
+        return await _firestoreDBService.readUser(_user.userId.toString());
       }
     }
   }
@@ -93,7 +94,7 @@ class UserRepository implements AuthBase {
     } else {
       MyUser _user = await _firebaseAuthService.signInWithEmailAndPassword(
           email, password);
-      return await _firestoreDBService.readUser(_user.userID.toString());
+      return await _firestoreDBService.readUser(_user.userId.toString());
     }
   }
 
@@ -128,18 +129,18 @@ class UserRepository implements AuthBase {
     }
   }
 
-  Stream<List<Mesaj>> getMessages(
+  Stream<List<MessageModel>> getMessages(
       String currentUserserId, String sohbetEdilenUserUserId) {
     if (_appMode == AppMode.DEBUG) {
       return Stream.empty(); // boş stream
     } else {
-      Stream<List<Mesaj>> allUsers = _firestoreDBService.getMessages(
+      Stream<List<MessageModel>> allUsers = _firestoreDBService.getMessages(
           currentUserserId, sohbetEdilenUserUserId);
       return allUsers;
     }
   }
 
-  Future<bool> saveMessage(Mesaj mesaj) async {
+  Future<bool> saveMessage(MessageModel mesaj) async {
     if (_appMode == AppMode.DEBUG) {
       return true;
     } else {
@@ -147,13 +148,14 @@ class UserRepository implements AuthBase {
     }
   }
 
-  Future<List<KonusmaModeli>> getAllConversations(String userId) async {
+  Future<List<KonusmaModel>> getAllConversations(String userId) async {
     if (_appMode == AppMode.DEBUG) {
       return [];
     } else {
-      List<KonusmaModeli> konusmaListesi;
+      DateTime _okunmaZamani = await _firestoreDBService.saatiGoster(userId);
+      List<KonusmaModel> konusmaListesi;
       konusmaListesi = await _firestoreDBService.getAllConversations(userId);
-      for (KonusmaModeli oankiKonusma in konusmaListesi) {
+      for (KonusmaModel oankiKonusma in konusmaListesi) {
         MyUser? userListesindekikullanici =
             _listedeUserBul(oankiKonusma.kimleKonusuyor.toString());
         if (userListesindekikullanici != null) {
@@ -161,6 +163,7 @@ class UserRepository implements AuthBase {
           oankiKonusma.konusulanUserName = userListesindekikullanici.userName;
           oankiKonusma.konusulanUserProfilURL =
               userListesindekikullanici.profilURL;
+          oankiKonusma.sonOkunmaZamani = _okunmaZamani;
         } else {
           print("aranılan userdaha önce getirilmemiş");
           MyUser veritabindanOkunanUser = await _firestoreDBService
@@ -168,7 +171,9 @@ class UserRepository implements AuthBase {
           oankiKonusma.konusulanUserName = veritabindanOkunanUser.userName;
           oankiKonusma.konusulanUserProfilURL =
               veritabindanOkunanUser.profilURL;
+          oankiKonusma.sonOkunmaZamani = _okunmaZamani;
         }
+        _timeagoHesapla(oankiKonusma, _okunmaZamani);
       }
       return konusmaListesi;
     }
@@ -176,10 +181,18 @@ class UserRepository implements AuthBase {
 
   MyUser? _listedeUserBul(String userId) {
     for (var i = 0; i < _allUsers.length; i++) {
-      if (_allUsers[i].userID == userId) {
+      if (_allUsers[i].userId == userId) {
         return _allUsers[i];
       }
     }
     return null;
+  }
+
+  void _timeagoHesapla(KonusmaModel oankiKonusma, DateTime okunmaZamani) {
+    timeago.setLocaleMessages("tr", timeago.TrMessages());
+    Duration _duration =
+        okunmaZamani.difference(oankiKonusma.olusturmaTarihi!.toDate());
+    oankiKonusma.aradakiZamanFarki =
+        timeago.format(okunmaZamani.subtract(_duration), locale: "tr");
   }
 }

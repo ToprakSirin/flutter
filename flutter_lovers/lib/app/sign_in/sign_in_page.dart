@@ -16,7 +16,7 @@ class SignInPage extends StatelessWidget {
     await userModel.signInWithGoogle();
   }
 
-
+  
 
   void _emailIleGirs(BuildContext context) {
     Navigator.of(context).push(
@@ -53,7 +53,7 @@ class SignInPage extends StatelessWidget {
               buttonText: "Facebook ile oturum açın",
               buttonIcon: Image.asset("assets/images/facebook-logo.png",
                   fit: BoxFit.cover),
-              onPressed: () => (){},
+              onPressed: () {},
             ),
             SocialLoginButton(
               buttonText: "Email ile oturum açın",

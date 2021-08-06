@@ -1,16 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Mesaj {
+class MessageModel {
   final String kimden;
   final String kime;
-  final String mesaj;
+  final String message;
   final bool bendenMi;
   final Timestamp? date;
-
-  Mesaj({
+  MessageModel({
     required this.kimden,
     required this.kime,
-    required this.mesaj,
+    required this.message,
     required this.bendenMi,
     this.date,
   });
@@ -19,16 +18,21 @@ class Mesaj {
     return {
       "kimden": kimden,
       "kime": kime,
-      "message": mesaj,
+      "message": message,
       "bendenMi": bendenMi,
       "date": date ?? FieldValue.serverTimestamp(),
     };
   }
 
-  Mesaj.fromMap(Map<String, dynamic> map)
+  MessageModel.fromMap(Map<String, dynamic> map)
       : kimden = map["kimden"],
         kime = map["kime"],
-        mesaj = map["mesaj"],
+        message = map["message"],
         bendenMi = map["bendenMi"],
         date = map["date"];
+
+  @override
+  String toString() {
+    return 'MessageModel(kimden: $kimden, kime: $kime, message: $message, bendenMi: $bendenMi, date: $date)';
+  }
 }
