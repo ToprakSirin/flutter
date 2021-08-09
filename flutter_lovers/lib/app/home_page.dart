@@ -20,6 +20,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   TabItem _currentTab = TabItem.Kullanicilar;
+
   Map<TabItem, Widget> tumSayfalar() {
     return {
       TabItem.Kullanicilar: KullanicilarPage(),
@@ -40,6 +41,8 @@ class _HomePageState extends State<HomePage> {
       onWillPop: () async =>
           !await navigatorKeys[_currentTab]!.currentState!.maybePop(),
       child: MyCustomBottomNavigation(
+        sayfaOlustur: tumSayfalar(),
+        navigatorKeys: navigatorKeys,
         currentTab: _currentTab,
         onSelectedTab: (secilenTab) {
           if (AdmobIslemleri.myBannerAd != null &&
@@ -70,8 +73,6 @@ class _HomePageState extends State<HomePage> {
           }
           print("Secilen tab: " + secilenTab.toString());
         },
-        sayfaOlustur: tumSayfalar(),
-        navigatorKeys: navigatorKeys,
       ),
     );
   }

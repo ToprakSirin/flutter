@@ -31,7 +31,7 @@ class SignInPage extends StatelessWidget {
       appBar: AppBar(title: Text("Flutter lovers"), elevation: 0),
       backgroundColor: Colors.grey.shade200,
       body: Container(
-        padding: EdgeInsets.all(20),
+        padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -41,9 +41,9 @@ class SignInPage extends StatelessWidget {
               child: Text("OTURUM AÇIN",
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             ),
-            SizedBox(height: 5),
+            SizedBox(height: 8),
             SocialLoginButton(
-              buttonText: "GOOGLE İLE OTURUM AÇIN",
+              buttonText: "Gmail ile Giriş Yap",
               textColor: Colors.black87,
               buttonColor: Colors.white,
               buttonIcon: Image.asset("assets/images/google-logo.png"),
@@ -51,16 +51,17 @@ class SignInPage extends StatelessWidget {
             ),
             SocialLoginButton(
               buttonColor: Color(0xFF334D92),
-              buttonText: "FACEBOOK İLE OTURUM AÇIN",
+              buttonText: "Facebook ile Giriş Yap",
               buttonIcon: Image.asset("assets/images/facebook-logo.png",
                   fit: BoxFit.cover),
               onPressed: () {},
             ),
             SocialLoginButton(
-              buttonText: "EMAİL İLE OTURUM AÇIN",
+              buttonText: "Email ve Şifre ile Giriş yap",
               buttonIcon: Icon(
                 Icons.email,
                 color: Colors.white,
+                size: 32,
               ),
               onPressed: () => _emailIleGirs(context),
             ),

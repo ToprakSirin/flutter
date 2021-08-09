@@ -55,7 +55,8 @@ class _KonusmalarimPageState extends State<KonusmalarimPage> {
         Provider.of<UserViewModel>(context, listen: true);
 
     return Scaffold(
-      appBar: AppBar(title: Text("Konusmalarim")),
+      appBar:
+          AppBar(title: Text("                  KONUŞMALARIM               ")),
       body: Container(
         child: FutureBuilder<List<KonusmaModel>>(
           future: _userModel

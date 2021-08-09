@@ -22,10 +22,10 @@ class MyUser {
           profilURL ?? "http://buyukkabacavakfi.org/images/userimg.jpg",
       "createdAt": createdAt ??
           FieldValue
-              .serverTimestamp(), //database i değiştirir isel burayı güncelle
+              .serverTimestamp(), //database i değiştirir
       "updatedAt": updatedAt ??
           FieldValue
-              .serverTimestamp(), //database i değiştirir isel burayı güncelle
+              .serverTimestamp(), //database i değiştirir 
       "seviye": seviye ?? 1,
     };
   }

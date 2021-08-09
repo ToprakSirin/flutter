@@ -19,10 +19,10 @@ class EmailAndPasswordLoginPage extends StatefulWidget {
 class _EmailAndPasswordLoginPageState extends State<EmailAndPasswordLoginPage> {
   String? _email;
   String? _password;
-  final _formKey = GlobalKey<FormState>();
   String? _butonText;
   String? _linkText;
   FormType _formType = FormType.LOGIN;
+  final _formKey = GlobalKey<FormState>();
 
   void _formSubmit(UserViewModel _userModel) async {
     _formKey.currentState!.save();
@@ -64,33 +64,36 @@ class _EmailAndPasswordLoginPageState extends State<EmailAndPasswordLoginPage> {
     final _userModel = Provider.of<UserViewModel>(context);
     _butonText = _formType == FormType.LOGIN ? "Giriş Yap" : "Kayıt Ol";
     _linkText = _formType == FormType.LOGIN
-        ? "Hesabınız yok mu? Kayıt Ol"
-        : "Hesabınız var mı? Giriş Yap ";
+        ? "Hesabınız yok mu? Kayıt Olun"
+        : "Hesabınız var mı? Giriş Yapın ";
     if (_userModel.user != null) {
       Future.delayed(
-        Duration(milliseconds: 200),
+        Duration(milliseconds: 1),
         () => Navigator.of(context).pop(),
       );
     }
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: AppBar(title: Text("Giriş ve Kayıt ol")),
+      appBar: AppBar(
+        title: Text("Giriş / Kayıt ol"),
+      ),
       body: _userModel.state == ViewState.Idle
           ? SingleChildScrollView(
               child: Form(
                 key: _formKey,
                 child: Padding(
-                  padding: const EdgeInsets.all(15.0),
+                  padding: const EdgeInsets.all(16.0),
                   child: Column(
                     children: [
                       TextFormField(
-                        initialValue: "abc@gmail.com",
+                        //initialValue: "abc@gmail.com",
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
                           errorText: _userModel.emailErrorMessage != null
                               ? _userModel.emailErrorMessage
                               : null,
                           prefixIcon: Icon(Icons.email),
+                          hintText: 'Email',
                           labelText: "Email",
                           border: OutlineInputBorder(),
                         ),
@@ -98,9 +101,9 @@ class _EmailAndPasswordLoginPageState extends State<EmailAndPasswordLoginPage> {
                           _email = girilenEmail;
                         },
                       ),
-                      SizedBox(height: 20),
+                      SizedBox(height: 8),
                       TextFormField(
-                        initialValue: "password",
+                        //initialValue: "password",
                         obscureText: true,
                         keyboardType: TextInputType.visiblePassword,
                         decoration: InputDecoration(
@@ -108,19 +111,22 @@ class _EmailAndPasswordLoginPageState extends State<EmailAndPasswordLoginPage> {
                               ? _userModel.passwordErrorMessage
                               : null,
                           prefixIcon: Icon(Icons.lock),
-                          labelText: "Password",
+                          hintText: 'Şifre',
+                          labelText: "Şifre",
                           border: OutlineInputBorder(),
                         ),
                         onSaved: (girirlenSifre) {
                           _password = girirlenSifre;
                         },
                       ),
-                      SizedBox(height: 20),
+                      SizedBox(height: 8),
                       SocialLoginButton(
+                        buttonColor: Theme.of(context).primaryColor,
                         buttonText: _butonText!,
+                        radius: 10,
                         onPressed: () => _formSubmit(_userModel),
                       ),
-                      SizedBox(height: 20),
+                      SizedBox(height: 10),
                       TextButton(
                         onPressed: () => _formTypeDegistir(),
                         child: Text(_linkText!),
