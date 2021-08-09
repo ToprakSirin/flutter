@@ -10,9 +10,10 @@ abstract class DBBase {
   Future<List<MyUser>> getAllUesr();
   Future<List<KonusmaModel>> getAllConversations(
       String userId); // konusmaların getirilmesi
-  Stream<List<MessageModel>> getMessages(
+  Stream<List<Mesaj>> getMessages(
       String currentUserId, String sohbetEdilenUserId);
-  Future<bool> saveMessage(MessageModel mesaj);
+  Future<bool> saveMessage(Mesaj mesaj);
   Future<DateTime> saatiGoster(String userId);
+   // Future<List<MyUser>> getUserwithPagination(MyUser enSonGetirilenUser, int getirilecekElemanSayisi);
 
 }

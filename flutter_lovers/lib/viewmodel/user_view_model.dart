@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_lovers/locator.dart';
 import 'package:flutter_lovers/model/konusma_model.dart';
@@ -91,8 +90,6 @@ class UserViewModel with ChangeNotifier implements UserRepostory {
     }
   }
 
-  
-
   @override
   Future<MyUser?> createUserWithEmailAndPassword(
       String email, String password) async {
@@ -157,13 +154,13 @@ class UserViewModel with ChangeNotifier implements UserRepostory {
     return allUsers;
   }
 
-  Stream<List<MessageModel>> getMessages(
+  Stream<List<Mesaj>> getMessages(
       String currentUserserId, String sohbetEdilenUserUserId) {
     return _repostory.getMessages(currentUserserId, sohbetEdilenUserUserId);
   }
 
-  Future<bool> saveMessage(MessageModel mesaj) async {
-    return await _repostory.saveMessage(mesaj);
+  Future<bool> saveMessage(Mesaj mesaj, MyUser currentUser) async {
+    return await _repostory.saveMessage(mesaj, currentUser);
   }
 
   Future<List<KonusmaModel>> getAllConversations(String userId) async {

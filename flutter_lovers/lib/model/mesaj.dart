@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class MessageModel {
+class Mesaj {
   final String kimden;
   final String kime;
   final String message;
   final bool bendenMi;
   final Timestamp? date;
-  MessageModel({
+  Mesaj({
     required this.kimden,
     required this.kime,
     required this.message,
@@ -24,7 +24,7 @@ class MessageModel {
     };
   }
 
-  MessageModel.fromMap(Map<String, dynamic> map)
+  Mesaj.fromMap(Map<String, dynamic> map)
       : kimden = map["kimden"],
         kime = map["kime"],
         message = map["message"],

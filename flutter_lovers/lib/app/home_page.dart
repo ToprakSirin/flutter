@@ -1,14 +1,15 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_lovers/admob_islemleri.dart';
 import 'package:flutter_lovers/app/konusmalarim.dart';
 import 'package:flutter_lovers/app/kullanicilar.dart';
 import 'package:flutter_lovers/app/my_custom_bottom_navigaton.dart';
 import 'package:flutter_lovers/app/profil.dart';
 import 'package:flutter_lovers/app/tabs_item.dart';
 import 'package:flutter_lovers/model/user.dart';
-import 'package:flutter_lovers/viewmodel/user_view_model.dart';
-import 'package:provider/provider.dart';
 
 //sadece oturum açmış kullanıcıların görmesi gereken sayfa
+
 class HomePage extends StatefulWidget {
   final MyUser user;
   HomePage({required this.user});
@@ -41,6 +42,17 @@ class _HomePageState extends State<HomePage> {
       child: MyCustomBottomNavigation(
         currentTab: _currentTab,
         onSelectedTab: (secilenTab) {
+          if (AdmobIslemleri.myBannerAd != null &&
+              AdmobIslemleri.myBannerAd!.id != null) {
+            print(
+                " #################### banner null değil dispose edilecek ######################");
+            try {
+              AdmobIslemleri.myBannerAd!.dispose();
+              AdmobIslemleri.myBannerAd = null;
+            } catch (e) {
+              print("hata:" + e.toString());
+            }
+          }
           if (secilenTab == _currentTab) {
             navigatorKeys[secilenTab]!
                 .currentState!

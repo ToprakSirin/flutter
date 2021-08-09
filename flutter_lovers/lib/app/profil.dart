@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+
 import 'package:flutter_lovers/common_widget/platform_duyarli_widgetler/platform_duyarli_alert_dialog.dart';
 import 'package:flutter_lovers/common_widget/social_log_in_button.dart';
 import 'package:flutter_lovers/viewmodel/user_view_model.dart';
@@ -40,9 +41,9 @@ class _ProfilPageState extends State<ProfilPage> {
         actions: [
           TextButton(
             onPressed: () => _cikisOnayi(context, _userModel),
-            child: Icon(
-              Icons.exit_to_app,
-              color: Colors.white,
+            child: Text(
+              "Çıkış",
+              style: TextStyle(color: Colors.white, fontSize: 18),
             ),
           ),
         ],
@@ -104,7 +105,7 @@ class _ProfilPageState extends State<ProfilPage> {
                 child: TextFormField(
                   controller: _userNameController,
                   decoration: InputDecoration(
-                    labelText: "User Nmae",
+                    labelText: "User Name",
                     border: OutlineInputBorder(),
                   ),
                 ),
@@ -135,7 +136,7 @@ class _ProfilPageState extends State<ProfilPage> {
       contentText: "Çıkışı onaylıyor musunuz?",
       basicButtonText: "Onayla",
       cancelButtonText: "Vazgeç",
-    ).dialogGoster(context);
+    ).goster(context);
     if (result) {
       _cikisYap(userModel, context);
     }
@@ -163,7 +164,7 @@ class _ProfilPageState extends State<ProfilPage> {
           title: "User Name Update",
           contentText: "User name zaten kullanılmakta",
           basicButtonText: "Tamam",
-        ).dialogGoster(context);
+        ).goster(context);
       }
     }
   }

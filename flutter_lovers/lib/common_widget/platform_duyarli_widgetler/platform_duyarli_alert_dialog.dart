@@ -16,7 +16,7 @@ class PlatformDuyarliAlertDialog extends PlatformDuyarliWidget {
     this.cancelButtonText,
   });
 
-  Future<bool> dialogGoster(BuildContext context) async {
+  Future<bool> goster(BuildContext context) async {
     bool result = Platform.isIOS
         ? await showCupertinoDialog(
             context: (context),

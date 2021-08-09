@@ -95,7 +95,7 @@ class FirestoreDBService implements DBBase {
   }
 
   @override
-  Stream<List<MessageModel>> getMessages(
+  Stream<List<Mesaj>> getMessages(
       String currentUserId, String sohbetEdilenUserId) {
     Stream<QuerySnapshot<Map<String, dynamic>>> _snapshot = _firebaseFirestore
         .collection("konusmalar")
@@ -103,12 +103,11 @@ class FirestoreDBService implements DBBase {
         .collection("mesajlar")
         .orderBy("date", descending: true)
         .snapshots();
-    return _snapshot.map((mesajListesi) => mesajListesi.docs
-        .map((mesaj) => MessageModel.fromMap(mesaj.data()))
-        .toList());
+    return _snapshot.map((mesajListesi) =>
+        mesajListesi.docs.map((mesaj) => Mesaj.fromMap(mesaj.data())).toList());
   }
 
-  Future<bool> saveMessage(MessageModel mesaj) async {
+  Future<bool> saveMessage(Mesaj mesaj) async {
     String _mesajID = _firebaseFirestore
         .collection("konusmalar")
         .doc()
@@ -172,4 +171,70 @@ class FirestoreDBService implements DBBase {
 
     return okunanTarih.toDate();
   }
+
+/* 
+  @override
+  Future<List<MyUser>> getUserwithPagination(
+      MyUser enSonGetirilenUser, int getirilecekElemanSayisi) async {
+    QuerySnapshot _querySnapshot;
+    List<MyUser> _tumKullanicilar = [];
+
+    if (enSonGetirilenUser == null) {
+      _querySnapshot = await FirebaseFirestore.instance
+          .collection("users")
+          .orderBy("userName")
+          .limit(getirilecekElemanSayisi)
+          .get();
+    } else {
+      _querySnapshot = await FirebaseFirestore.instance
+          .collection("users")
+          .orderBy("userName")
+          .startAfter([enSonGetirilenUser.userName])
+          .limit(getirilecekElemanSayisi)
+          .get();
+
+      await Future.delayed(Duration(seconds: 1));
+    }
+
+   
+
+    return _tumKullanicilar;
+  }
+
+  Future<List<MessageModel>> getMessagewithPagination(
+      String currentUserID,
+      String sohbetEdilenUserID,
+      MessageModel enSonGetirilenMesaj,
+      int getirilecekElemanSayisi) async {
+    QuerySnapshot _querySnapshot;
+    List<MessageModel> _tumMesajlar = [];
+
+    if (enSonGetirilenMesaj == null) {
+      _querySnapshot = await FirebaseFirestore.instance
+          .collection("konusmalar")
+          .doc(currentUserID + "--" + sohbetEdilenUserID)
+          .collection("mesajlar")
+          .where("konusmaSahibi", isEqualTo: currentUserID)
+          .orderBy("date", descending: true)
+          .limit(getirilecekElemanSayisi)
+          .get();
+    } else {
+      _querySnapshot = await FirebaseFirestore.instance
+          .collection("konusmalar")
+          .doc(currentUserID + "--" + sohbetEdilenUserID)
+          .collection("mesajlar")
+          .where("konusmaSahibi", isEqualTo: currentUserID)
+          .orderBy("date", descending: true)
+          .startAfter([enSonGetirilenMesaj.date])
+          .limit(getirilecekElemanSayisi)
+          .get();
+
+      await Future.delayed(Duration(seconds: 1));
+    }
+
+   
+
+    return _tumMesajlar;
+  } */
+
 }

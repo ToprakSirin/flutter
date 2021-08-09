@@ -1,7 +1,11 @@
 import 'package:cloud_firestore_platform_interface/src/timestamp.dart';
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_lovers/admob_islemleri.dart';
+
 import 'package:flutter_lovers/model/mesaj.dart';
 import 'package:flutter_lovers/model/user.dart';
+
 import 'package:flutter_lovers/viewmodel/user_view_model.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -18,6 +22,31 @@ class KonusmaPage extends StatefulWidget {
 class _KonusmaPageState extends State<KonusmaPage> {
   TextEditingController _messageController = TextEditingController();
   ScrollController _scrollController = ScrollController();
+  InterstitialAd? myInterstitialAd;
+
+  @override
+  void initState() {
+    super.initState();
+    if (AdmobIslemleri.myBannerAd != null) {
+      print("my banner null oldu chat sayfasında");
+      AdmobIslemleri.myBannerAd!.dispose();
+    }
+
+    if (AdmobIslemleri.kacKereGosterildi <= 2) {
+      myInterstitialAd = AdmobIslemleri.buildInterstitialAd();
+      myInterstitialAd!
+        ..load()
+        ..show();
+      AdmobIslemleri.kacKereGosterildi++;
+    }
+  }
+
+  @override
+  void dispose() {
+    if (myInterstitialAd != null) myInterstitialAd!.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final _userModel = Provider.of<UserViewModel>(context);
@@ -29,10 +58,10 @@ class _KonusmaPageState extends State<KonusmaPage> {
       body: Column(
         children: [
           Expanded(
-            child: StreamBuilder<List<MessageModel>>(
+            child: StreamBuilder<List<Mesaj>>(
               stream: _userModel.getMessages(
                   _currentUser.userId!, _sohbetEdilenUser.userId!),
-              builder: (context, AsyncSnapshot<List<MessageModel>> snapshot) {
+              builder: (context, AsyncSnapshot<List<Mesaj>> snapshot) {
                 if (snapshot.hasData) {
                   return ListView.builder(
                     reverse: true,
@@ -98,20 +127,20 @@ class _KonusmaPageState extends State<KonusmaPage> {
   Future<void> _messageSave(MyUser currentUser, MyUser sohbetEdilenUser,
       UserViewModel userModel) async {
     if (_messageController.text.trim().length > 0) {
-      MessageModel _mesaj = MessageModel(
+      Mesaj _mesaj = Mesaj(
         bendenMi: true,
         kimden: currentUser.userId.toString(),
         kime: sohbetEdilenUser.userId.toString(),
         message: _messageController.text,
       );
       _messageController.clear();
-      await userModel.saveMessage(_mesaj);
+      await userModel.saveMessage(_mesaj, currentUser);
     }
     _scrollController.animateTo(0,
         duration: Duration(milliseconds: 150), curve: Curves.bounceInOut);
   }
 
-  Widget _mesajBalonu(MessageModel anlikMesaj) {
+  Widget _mesajBalonu(Mesaj anlikMesaj) {
     Color _gidenMesajColor = Colors.blue;
     Color _gelenMesajColor = Colors.teal;
     bool myMessage = anlikMesaj.bendenMi;

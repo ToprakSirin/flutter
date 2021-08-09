@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 class MyUser {
   String? userId;
   String? email;
@@ -17,8 +18,8 @@ class MyUser {
       "email": email,
       "userName": userName ??
           email!.substring(0, email!.indexOf("@")) + randomSayiUret(),
-      "profilURL": profilURL ??
-          "https://st.depositphotos.com/1779253/5140/v/950/depositphotos_51405259-stock-illustration-male-avatar-profile-picture-use.jpg",
+      "profilURL":
+          profilURL ?? "http://buyukkabacavakfi.org/images/userimg.jpg",
       "createdAt": createdAt ??
           FieldValue
               .serverTimestamp(), //database i değiştirir isel burayı güncelle
@@ -40,7 +41,7 @@ class MyUser {
         seviye = map["seviye"];
 
   MyUser.userIdAndProfilPhotoAndUserName(
-      {required this.userId, required this.profilURL, required this.userName});
+      {required this.userId, required this.profilURL, this.userName});
 
   @override
   String toString() {

@@ -12,15 +12,15 @@ class SocialLoginButton extends StatelessWidget {
 
   SocialLoginButton({
     required this.buttonText,
-    this.buttonColor: Colors.blue,
+    this.buttonColor: Colors.purple,
     this.textColor: Colors.white,
     this.radius: 16,
-    this.yukseklik: 50,
+    this.yukseklik: 40,
     this.fontSize: 17,
     this.buttonIcon,
     required this.onPressed,
     // assert ile buton textin null kullanılmaya çalışılması halinde hatanın kaynağını göstermiş olduk
-  }) ;
+  });
 
   @override
   Widget build(BuildContext context) {

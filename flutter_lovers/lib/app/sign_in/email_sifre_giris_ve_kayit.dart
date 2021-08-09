@@ -36,7 +36,7 @@ class _EmailAndPasswordLoginPageState extends State<EmailAndPasswordLoginPage> {
           title: "Oturum Açılamadı",
           contentText: Exceptions.hataGoster(e.toString().toString()),
           basicButtonText: 'Tamam',
-        ).dialogGoster(context);
+        ).goster(context);
       }
     } else {
       try {
@@ -46,7 +46,7 @@ class _EmailAndPasswordLoginPageState extends State<EmailAndPasswordLoginPage> {
           title: "Kayıt olmada hata",
           contentText: Exceptions.hataGoster(e.toString().toString()),
           basicButtonText: 'Tamam',
-        ).dialogGoster(context);
+        ).goster(context);
       }
     }
   }

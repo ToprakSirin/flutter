@@ -7,16 +7,14 @@ import 'package:provider/provider.dart';
 import '../../common_widget/social_log_in_button.dart';
 
 class SignInPage extends StatelessWidget {
-  // void _misafirGiris(BuildContext context, UserViewModel userModel) async {
+  /*  void _misafirGiris(BuildContext context, UserViewModel userModel) async {
   //   MyUser sonuc = await userModel.signInAnonymously();
-  //   print("Oturum açan user ıd: " + sonuc.userId.toString());
-  // }
+    print("Oturum açan user ıd: " + sonuc.userId.toString());
+   } */
 
   void _googleIleGirisYap(UserViewModel userModel) async {
     await userModel.signInWithGoogle();
   }
-
-  
 
   void _emailIleGirs(BuildContext context) {
     Navigator.of(context).push(
@@ -31,6 +29,7 @@ class SignInPage extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(title: Text("Flutter lovers"), elevation: 0),
+      backgroundColor: Colors.grey.shade200,
       body: Container(
         padding: EdgeInsets.all(20),
         child: Column(
@@ -39,28 +38,38 @@ class SignInPage extends StatelessWidget {
           children: [
             Align(
               alignment: Alignment.center,
-              child: Text("Oturum Açın", style: TextStyle(fontSize: 30)),
+              child: Text("OTURUM AÇIN",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             ),
             SizedBox(height: 5),
             SocialLoginButton(
-              buttonText: "Googke ile oturum açın",
+              buttonText: "GOOGLE İLE OTURUM AÇIN",
+              textColor: Colors.black87,
               buttonColor: Colors.white,
-              textColor: Colors.black54,
               buttonIcon: Image.asset("assets/images/google-logo.png"),
               onPressed: () => _googleIleGirisYap(_userModel),
             ),
             SocialLoginButton(
-              buttonText: "Facebook ile oturum açın",
+              buttonColor: Color(0xFF334D92),
+              buttonText: "FACEBOOK İLE OTURUM AÇIN",
               buttonIcon: Image.asset("assets/images/facebook-logo.png",
                   fit: BoxFit.cover),
               onPressed: () {},
             ),
             SocialLoginButton(
-              buttonText: "Email ile oturum açın",
-              buttonColor: Colors.tealAccent.shade700,
-              buttonIcon: Icon(Icons.email),
+              buttonText: "EMAİL İLE OTURUM AÇIN",
+              buttonIcon: Icon(
+                Icons.email,
+                color: Colors.white,
+              ),
               onPressed: () => _emailIleGirs(context),
             ),
+            /*SocialLoginButton(
+              onPressed: () => _misafirGirisi(context),
+              butonColor: Colors.teal,
+              butonIcon: Icon(Icons.supervised_user_circle),
+              butonText: "Misafir Girişi",
+            ),*/
           ],
         ),
       ),

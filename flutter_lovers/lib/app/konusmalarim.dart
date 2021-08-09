@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_lovers/admob_islemleri.dart';
 import 'package:flutter_lovers/app/konusma.dart';
 import 'package:flutter_lovers/model/konusma_model.dart';
 import 'package:flutter_lovers/model/user.dart';
@@ -15,12 +17,45 @@ class KonusmalarimPage extends StatefulWidget {
 
 class _KonusmalarimPageState extends State<KonusmalarimPage> {
   @override
+  void initState() {
+    super.initState();
+    RewardedVideoAd.instance.load(
+        adUnitId: AdmobIslemleri.odulluReklamTest,
+        targetingInfo: AdmobIslemleri.targetingInfo);
+
+    RewardedVideoAd.instance.listener =
+        (RewardedVideoAdEvent event, {String? rewardType, int? rewardAmount}) {
+      if (event == RewardedVideoAdEvent.rewarded) {
+        print(" *************** ODULLU REKLAM ***** ODUL VER");
+        odulluReklamLoad();
+      } else if (event == RewardedVideoAdEvent.loaded) {
+        print(
+            " *************** ODULLU REKLAM ***** REKLAM yuklendı ve gosterilecek");
+        RewardedVideoAd.instance.show();
+      } else if (event == RewardedVideoAdEvent.closed) {
+        print(" *************** ODULLU REKLAM ***** REKLAM KAPATILDI");
+      } else if (event == RewardedVideoAdEvent.failedToLoad) {
+        print(" *************** ODULLU REKLAM ***** REKLAM BULUNAMADI");
+        odulluReklamLoad();
+      } else if (event == RewardedVideoAdEvent.completed) {
+        print(" *************** ODULLU REKLAM ***** COMPLETED");
+      }
+    };
+  }
+
+  void odulluReklamLoad() {
+    RewardedVideoAd.instance.load(
+        adUnitId: AdmobIslemleri.odulluReklamTest,
+        targetingInfo: AdmobIslemleri.targetingInfo);
+  }
+
+  @override
   Widget build(BuildContext context) {
     UserViewModel _userModel =
         Provider.of<UserViewModel>(context, listen: true);
 
     return Scaffold(
-      appBar: AppBar(title: Text("Konuşmalarım")),
+      appBar: AppBar(title: Text("Konusmalarim")),
       body: Container(
         child: FutureBuilder<List<KonusmaModel>>(
           future: _userModel

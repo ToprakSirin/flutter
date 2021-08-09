@@ -61,8 +61,8 @@ class UserRepostory implements AuthBase {
       return await _fakeAuthService.signInWithGoogle();
     } else {
       MyUser _user = await _firebaseAuthService.signInWithGoogle();
-      bool result = await _firestoreDBService.saveUser(_user);
-      if (result) {
+      bool sonuc = await _firestoreDBService.saveUser(_user);
+      if (sonuc) {
         return await _firestoreDBService.readUser(_user.userId.toString());
       } else {
         throw Exception();
@@ -129,18 +129,18 @@ class UserRepostory implements AuthBase {
     }
   }
 
-  Stream<List<MessageModel>> getMessages(
+  Stream<List<Mesaj>> getMessages(
       String currentUserserId, String sohbetEdilenUserUserId) {
     if (_appMode == AppMode.DEBUG) {
       return Stream.empty(); // boş stream
     } else {
-      Stream<List<MessageModel>> allUsers = _firestoreDBService.getMessages(
+      Stream<List<Mesaj>> allUsers = _firestoreDBService.getMessages(
           currentUserserId, sohbetEdilenUserUserId);
       return allUsers;
     }
   }
 
-  Future<bool> saveMessage(MessageModel mesaj) async {
+  Future<bool> saveMessage(Mesaj mesaj, MyUser currentUser) async {
     if (_appMode == AppMode.DEBUG) {
       return true;
     } else {
